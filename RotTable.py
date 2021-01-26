@@ -2,7 +2,7 @@ import mathutils
 import math
 
 class RotTable:
-    """Represents the rotation table"""
+    """Represents the rotation table"""    
 
     __ORIGINAL_ROT_TABLE = {\
         "AA": [35.62, 7.2, -154, 0.06, 0.6, 0],\
@@ -23,10 +23,16 @@ class RotTable:
         "TT": [35.62, 7.2, 154, 0.06, 0.6, 0]\
         }
 
-    def __init__(self):
+    def __init__(self, data={}):
         self.__Rot_Table = {}
-        for dinucleotide in RotTable.__ORIGINAL_ROT_TABLE:
-            self.__Rot_Table[dinucleotide] = RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][:3]
+
+        if(data=={}):
+            for dinucleotide in RotTable.__ORIGINAL_ROT_TABLE:
+                self.__Rot_Table[dinucleotide] = RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][:2]
+
+        else :
+            for dinucleotide in data:
+                self.__Rot_Table[dinucleotide] = data[dinucleotide]
 
 
 
@@ -38,14 +44,19 @@ class RotTable:
     ###################
     # READING METHODS #
     ###################
+    def getTwistVariance(self, dinucleotide):
+        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][3]
+    
+    def getWedgeVariance(self, dinucleotide):
+        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][4]
 
-    def getTwist(self, dinucleotide):
-        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][0]
+    def getTwist(self, dinucleotide): #depend on the individual
+        return self.__Rot_Table[dinucleotide][0]
 
-    def getWedge(self, dinucleotide):
-        return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][1]
+    def getWedge(self, dinucleotide): #depend on the individual
+        return self.__Rot_Table[dinucleotide][1]
 
-    def getDirection(self, dinucleotide):
+    def getDirection(self, dinucleotide): #independent
         return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][2]
 
     ###################

@@ -21,6 +21,9 @@ class Traj3D:
     def getTraj(self):
         return self.__Traj3D
 
+    def getLastFromTraj(self):
+        return self.__Traj3D[-1]
+        
     def compute(self, dna_seq, rot_table):
 
         # Matrice cumulant l'ensemble des transformations géométriques engendrées par la séquence d'ADN
