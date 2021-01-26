@@ -14,7 +14,7 @@ def main():
 
     if args.filename:
 	    # Read file
-	    lineList = [line.rstrip('\n') for line in open("plasmid_8k.fasta")]
+	    lineList = [line.rstrip('\n') for line in open("./resources/plasmid_8k.fasta")]
 		# Formatting
 	    seq = ''.join(lineList[1:])
 	    traj.compute(seq, rot_table)
