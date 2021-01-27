@@ -137,7 +137,6 @@ class Genetic:
                                 break
                         # if mute_rate == origin-sigma:
 
-
                     elif random_method == 'triangular':
                         mute_rate = random.triangular(low=self.mutation_table[j][1], high=self.mutation_table[j][2], mode=self.mutation_table[j][3])
                     elif random_method == 'randint':

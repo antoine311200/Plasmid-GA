@@ -39,6 +39,8 @@ class Plasmid:
         
         lineList = [line.rstrip('\n') for line in open(filepath)]
         self.sequence = ''.join(lineList[1:])
+        self.sequence += self.sequence[:2]
+        self.compute()
 
     def encodage(self): #rotTable -> floatlist
         individu = []
@@ -59,9 +61,10 @@ class Plasmid:
         self.trajectory.compute(self.sequence, self.rotation_table)
 
     def getDistance(self):
-        self.compute()
-        last = self.trajectory.getLastFromTraj()
-        return math.sqrt(last.dot(last))
+        last = self.trajectory.getIndexFromTraj(-1)
+        second = self.trajectory.getIndexFromTraj(1)
+        prelast = self.trajectory.getIndexFromTraj(-2)
+        return math.sqrt(prelast.dot(prelast)) + math.sqrt((second-last).dot(second-prelast))
 
     def getAngle(self):
         pass
