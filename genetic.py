@@ -67,10 +67,45 @@ class Genetic:
         if(self.selection_mode == "elitist"):
             self.select_elit()
         elif (self.selection_mode == "tournoi"):
-            self.select_tournoi()
+            self.select_tournoi2()
+
+
+    def select_tournoi2(self):
+        indice_list = list(range(self.population_size[0]))
+        fitness_list = []
+        for i in range(self.population_size[0]):
+            fitness_list.append(self.fitness(self.current_population[i]))
+        sorted_idx = np.argsort(fitness_list)
+
+        for i in range(self.number_parents//10):
+            indice_list.remove(sorted_idx[i])
+            self.current_parents.append(self.current_population[sorted_idx[i]])
+        loser_idx=[]
+        for i in range(self.number_parents-self.number_parents//10):
+            if(len(indice_list)<2):
+                indice_list += loser_idx
+                loser_idx=[]
+            a=random.choice(indice_list)
+            indice_list.remove(a)
+            b=random.choice(indice_list)
+            indice_list.remove(b)
+
+            if( fitness_list[a] > fitness_list[b]):# b gagne
+                self.current_parents.append(self.current_population[b])
+                loser_idx.append(a)
+            else : # a gagne
+                self.current_parents.append(self.current_population[a])
+                loser_idx.append(b)
+        
+        self.evolution_trace.append([self.current_population[sorted_idx[0]], fitness_list[sorted_idx[0]]])
+
+        if self.history_parents_enable:
+            self.parents_history.append(self.current_parents)
+
+
 
     def select_tournoi(self):
-        self.proba_win = 0.1
+        self.proba_win = 0.01
         self.current_parents = np.empty(
             (self.number_parents, self.population_size[1]))
         fitness_list = []
@@ -78,8 +113,8 @@ class Genetic:
             fitness_list.append(self.fitness(self.current_population[i]))
         L_indice = np.argsort(fitness_list)
         L_tier = []
-        L_tier.append([[self.current_population[i], self.fitness(
-            self.current_population[i]), i] for i in range(self.population_size[0])])
+        L_tier.append([[self.current_population[i], fitness_list[i], i]
+                     for i in range(self.population_size[0])])
         # L_tier est la liste des placements, par ex L_tier[0] contient la liste des couples [individu_i,fitness(individu_i)]
         # qui on perdu des le 1er match, L_tier[1] ceux qui on perdu leur 2em match etc
         # on fait le tournoi pour placer tout les joueurs (on s'arrête quand on a un gagnant final)

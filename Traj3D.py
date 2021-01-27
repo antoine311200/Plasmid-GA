@@ -59,12 +59,13 @@ class Traj3D:
             self.__Traj3D.append(total_matrix @ self.__Traj3D[0])
 
 
-    def draw(self, filename):
+    def draw(self, trueIdxLast):
         xyz = np.array(self.__Traj3D)
         self.__Traj3D = []
         x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.plot(x,y,z)
-        ax.scatter(np.array([xyz[0][0],xyz[-1][0]]),np.array([xyz[0][1],xyz[-1][1]]),np.array([xyz[0][2],xyz[-1][2]]), color='red')
+        ax.scatter([xyz[0][0],xyz[-trueIdxLast-1][0]],[xyz[0][1],xyz[-trueIdxLast-1][1]],[xyz[0][2],xyz[-trueIdxLast-1][2]], color='green')
+        ax.scatter([xyz[0][0],xyz[-1][0]],[xyz[0][1],xyz[-1][1]],[xyz[0][2],xyz[-1][2]], color='red')
         plt.show()

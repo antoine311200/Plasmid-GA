@@ -5,7 +5,7 @@ important_dinucleotides = ["AA", "AC", "AG", "AT", "CA", "CC", "CG", "GA", "GC",
 symetricADN = {"A" : "T", "T" : "A",\
                "C" : "G", "G" : "C"}
 
-def dataForMutation(rot_tab):
+def dataForMutation(rot_tab, ):
     mut_table = []
     for dinucleotide in important_dinucleotides :
         mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide)],\

@@ -30,11 +30,12 @@ class Plasmid:
 
         return RotTable(data)
 
-    def __init__(self, signature, rotation_table=RotTable(), trajectory=Traj3D(), sequence='AAAA'):
+    def __init__(self, signature, rotation_table=RotTable(), trajectory=Traj3D(), sequence='AAAA', number_repli=15):
         self.signature = signature
         self.sequence = sequence
         self.rotation_table = rotation_table
         self.trajectory = trajectory
+        self.number_repli= number_repli
         self.compute()
 
 
@@ -43,7 +44,7 @@ class Plasmid:
         
         lineList = [line.rstrip('\n') for line in open(filepath)]
         self.sequence = ''.join(lineList[1:])
-        self.sequence += self.sequence[:2]
+        self.sequence += self.sequence[:self.number_repli]
         self.compute()
 
     def encodage(self): #rotTable -> floatlist
@@ -59,16 +60,19 @@ class Plasmid:
         self.sequence = sequence
 
     def draw(self):
-        self.trajectory.draw(self.signature)
+        self.trajectory.draw(self.number_repli)
 
     def compute(self):
         self.trajectory.compute(self.sequence, self.rotation_table)
 
     def getDistance(self):
-        last = self.trajectory.getIndexFromTraj(-1)
-        second = self.trajectory.getIndexFromTraj(1)
-        prelast = self.trajectory.getIndexFromTraj(-2)
-        return math.sqrt(prelast.dot(prelast)) + math.sqrt((second-last).dot(second-last))
+        dist = 0
+        for i in range(self.number_repli):
+            point1 = self.trajectory.getIndexFromTraj(i)
+            point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
+            var = point1-point2
+            dist += math.sqrt(var.dot(var))
+        return dist/self.number_repli
 
     def getAngle(self):
         pass

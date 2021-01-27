@@ -25,10 +25,10 @@ if __name__ == "__main__":
 
     # Genetic algorithm parameters
 
-    number_population = 30
-    number_parents = 7
+    number_population = 40
+    number_parents = 10
     number_generations = 10
-    mutation_variance = 100
+    mutation_variance = 1000
 
 
     mutation_table = dataForMutation(RotTable(), mutation_variance)
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
 
     data = {
-        "selection_mode" : "elitist",
+        "selection_mode" : "tournoi",
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
         "fitness_data" : [Traj3D(), plasmid.sequence],
