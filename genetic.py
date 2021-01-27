@@ -93,7 +93,7 @@ class Genetic:
                     else:
                         L_gagnant.append(J2)
                         L_tier[-1].remove(J2)
-                        
+                
                 else:
                     if np.random.random_sample() < self.proba_win:
                         L_gagnant.append(J1)
