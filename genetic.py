@@ -44,6 +44,8 @@ class Genetic:
         #     value += (cv[1]-cv[0])**2
         # return math.sqrt(value)/cps
         # print(cpl)
+        plsm = Plasmid.encode(indiv)
+
         rot_table = RotTable(cpl)
         traj = Traj3D()
         traj.compute(seq, rot_table)

@@ -8,11 +8,11 @@ its sequence
 '''
 class Plasmid:
 
-    def __init__(self, signature, rotation_table=RotTable.__ORIGINAL_ROT_TABLE, sequence=[]):
+    def __init__(self, signature, rotation_table=RotTable.__ORIGINAL_ROT_TABLE, trajectory=Traj3D(), sequence=[]):
         self.signature = signature
         self.sequence = sequence
         self.rotation_table = rotation_table
-        self.trajectory = Traj3D()
+        self.trajectory = trajectory
 
     def load(self, filepath):
         self.filepath = filepath
@@ -31,3 +31,9 @@ class Plasmid:
 
     def compute(self):
         self.trajectory.compute(self.sequence, self.rotation_table)
+
+    def getDistance():
+        pass
+
+    def getAngle():
+        pass
