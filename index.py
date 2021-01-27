@@ -22,8 +22,8 @@ if __name__ == "__main__":
     # Genetic algorithm parameters
 
     number_population = 30
-    number_parents = 7
-    number_generations = 50
+    number_parents = 12
+    number_generations = 500
 
     mutation_table = dataForMutation(RotTable())
     sample_size = len(mutation_table)

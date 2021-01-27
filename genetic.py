@@ -80,32 +80,33 @@ class Genetic:
         child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
         return child
 
-
     def crossover(self):
-    
         nb_voulu = self.offspring_size[0]
         Parents = self.current_parents
 
-        for _ in range(nb_voulu//sum(self.sx_weights)):
+        while True:#for _ in range(nb_voulu//sum(self.sx_weights)):
             # On va créer en boucle sum(self.sx_weights) enfants, jusqu'à en avoir le nombre voulu.
             # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
             # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
             # par le poids de la méthode, indiqué dans le tableau self.sx_weights.
-            
 
             for d in range(2, len(self.sx_weights)+2): # d = nbr of parents pour créer un enfant
                 poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
 
                 for _ in range(poids):
+                    if len(self.current_offspring) >= nb_voulu:
+                        return
+
                     rd_parents = [random.choice(Parents) for _ in range(d)] # choix de d parents aléatoires
                     child = self.repro(rd_parents, d) 
                     self.current_offspring.append(child)
+        # print("test", len(self.current_offspring), self.offspring_size)
 
     def mutate(self):
         print("mutate", end= '  ')
         #print(self.current_offspring)
         if self.mutation_table != None:
-            print(self.offspring_size)
+            # print(self.offspring_size)
             for i in range(self.offspring_size[0]):
                 for j in range(self.offspring_size[1]):
                     random_method = self.mutation_table[j][0]
