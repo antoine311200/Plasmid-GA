@@ -21,7 +21,7 @@ class Genetic:
         self.mutation_table = data['mutation_table']
 
         self.current_generation = 0
-        self.population_size = self.initial_population.shape
+        self.population_size = (len(self.initial_population), len(self.initial_population[0]))
         self.offspring_size = (self.population_size[0]-self.number_parents, self.population_size[1])
 
         self.history_population_enable = True
@@ -61,7 +61,7 @@ class Genetic:
     # roulette selection : p_i = f_i / sum f_j (sur-representativity !!!)
     # rang selection : sort -> index = proportion (smoothing) (convergence time !!!)
     # tournament selection : 2 random -> best score (+ probabilty of win) => diversity
-    
+
     def select(self):
 
         self.current_parents = np.empty((self.number_parents, self.population_size[1]))
@@ -148,8 +148,7 @@ class Genetic:
             for i in range(self.offspring_size[0]):
                 for j in range(self.offspring_size[1]):
                     self.current_offspring[i][j] += np.random.randint(self.mutation_table[j].min, self.mutation_table[j].max)
-        
-            
+
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
 
     def bestfit(self):
@@ -246,7 +245,7 @@ for i in range(50):
         sample.append(round(original_sample[j]+rand,5))
     population.append(sample)
 print(population)
-population = np.array(population)
+# population = np.array(population)
 
 GA = Genetic(10, 50, population, {'mutation_table': mutation_table})
 GA.launch()
