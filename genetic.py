@@ -27,12 +27,14 @@ class Genetic:
 
 
         self.current_generation = 0
-        self.population_size = self.initial_population.shape
+        self.population_size = (len(self.initial_population),  len(self.initial_population[0]))
         self.offspring_size = (self.population_size[0]-self.number_parents, self.population_size[1])
 
         self.history_population_enable = True
         self.history_parents_enable = True
 
+        print(self.population_size)
+        print(self.offspring_size)
 
         self.population_history = []
         self.parents_history = []
@@ -103,6 +105,7 @@ class Genetic:
         print("mutate", end= '  ')
         #print(self.current_offspring)
         if self.mutation_table != None:
+            print(self.offspring_size)
             for i in range(self.offspring_size[0]):
                 for j in range(self.offspring_size[1]):
                     random_method = self.mutation_table[j][0]
@@ -126,7 +129,7 @@ class Genetic:
                         sigma = self.mutation_table[j][1]
                         
                         while True:
-                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/10)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/1000)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -182,49 +185,49 @@ class Genetic:
             print("Generation "+str(i+1)+" (best) : ", self.evolution_trace[i][0], " (error : ", str(round(self.evolution_trace[i][1],4))+")")
 
 
-list = [[1,2,3],[[1,2,3],[4,[4,3],3,2]]]
+# list = [[1,2,3],[[1,2,3],[4,[4,3],3,2]]]
 
 
-lineList = [line.rstrip('\n') for line in open("./resources/plasmid_8k.fasta")]
-seq = ''.join(lineList[1:])
+# lineList = [line.rstrip('\n') for line in open("./resources/plasmid_8k.fasta")]
+# seq = ''.join(lineList[1:])
 
-mutation_table= dataForMutation(RotTable())
-indiv = [35.62, 7.2, 34.4, 1.1, 27.7, 8.4, 31.5, 2.6, 34.5, 3.5,33.67, 2.1,29.8, 6.7,36.9, 5.3,40, 5,36, 0.9]
+# mutation_table= dataForMutation(RotTable())
+# indiv = [35.62, 7.2, 34.4, 1.1, 27.7, 8.4, 31.5, 2.6, 34.5, 3.5,33.67, 2.1,29.8, 6.7,36.9, 5.3,40, 5,36, 0.9]
 
-pop_nb = 30
+# pop_nb = 30
 
 
-population = []
-for i in range(pop_nb):
-    sample = []
-    for j in range(len(mutation_table)):
-        rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
+# population = []
+# for i in range(pop_nb):
+#     sample = []
+#     for j in range(len(mutation_table)):
+#         rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
 
-        sample.append(round(indiv[j]+rand,5))
-    population.append(sample)
-population = np.array(population)
-
-def fitness_indiv(indiv, data):
-    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance()
+#         sample.append(round(indiv[j]+rand,5))
+#     population.append(sample)
+# population = np.array(population)
 
 # def fitness_indiv(indiv, data):
-#     data[0].compute(data[1], decodage(indiv))
-#     lastVect = data[0].getLastFromTraj()
-#     return(math.sqrt(lastVect.dot(lastVect)))
+#     return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance()
 
-data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
-    "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq], "crossover_data" : [5, 2, 1, 1, 1]}
+# # def fitness_indiv(indiv, data):
+# #     data[0].compute(data[1], decodage(indiv))
+# #     lastVect = data[0].getLastFromTraj()
+# #     return(math.sqrt(lastVect.dot(lastVect)))
+
+# data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
+#     "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq], "crossover_data" : [5, 2, 1, 1, 1]}
 
 
 
-print(fitness_indiv(indiv, [Traj3D(), seq]))
+# print(fitness_indiv(indiv, [Traj3D(), seq]))
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    gen = Genetic(pop_nb//3,30,population, fitness_indiv, data=data)
-    gen.launch()
-    gen.print()
+#     gen = Genetic(pop_nb//3,30,population, fitness_indiv, data=data)
+#     gen.launch()
+#     gen.print()
 
-    plasmid = Plasmid("", Plasmid.decodage(gen.evolution_trace[-1][0]), sequence=seq)
-    plasmid.compute()
-    plasmid.draw()
+#     plasmid = Plasmid("", Plasmid.decodage(gen.evolution_trace[-1][0]), sequence=seq)
+#     plasmid.compute()
+#     plasmid.draw()
