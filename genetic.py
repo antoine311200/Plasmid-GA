@@ -1,6 +1,6 @@
 import numpy as np
 import math as math
-
+from random import *
 
 class Genetic:
 
@@ -26,8 +26,9 @@ class Genetic:
         self.current_offspring = []
         self.evolution_trace = []
 
-        self.sx_max_parents = 5 # Nombre maximal de parents d'un même individu
-        self.sx_weights = [5, 2, 1, 1, 0] # Pondération des différents modes de reproduction
+
+        self.sx_weights = [5, 2, 1, 1, 1] # Pondération des différents modes de reproduction
+        '''NB : la somme des coeff doit diviser le nombre d'enfants voulus à chaque génération'''
 
     def fitness_basic(self, cpl, dpl): 
         apl = zip(cpl, dpl)
@@ -51,51 +52,47 @@ class Genetic:
         fitness_list = []
         for i in range(self.population_size[0]):
             fitness_list.append(self.fitness_basic(self.current_population[i], value))
-        print(fitness_list)
+        # print(fitness_list)
         self.sorted_idx = np.argsort(fitness_list)
-        print(self.sorted_idx)
+        # print(self.sorted_idx)
         for i in range(self.number_parents):
             self.current_parents[i] = self.current_population[self.sorted_idx[i]]
         self.evolution_trace.append([self.current_population[self.sorted_idx[0]], fitness_list[self.sorted_idx[0]]])
         #self.current_parents = sorted(fitness_list)[:self.number_parents]
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
-        print(self.current_parents)
+        # print(self.current_parents)
 
-    def crossover(self, nb_ch_voulu):
-        P = self.current_parents
-        C = []
-        nb_ch = 0
-        taille = self.offspring_size[1]
-        while nb_ch < nb_ch_voulu :
-            sx_nb_par = nb_ch % self.sx_max_par
-            sx_weight = self.sx_weigths[nb_ch % self.sx_max_parents]
-            for i in range(sx_weight): # on a pondéré le nombre d'enfants
-                child = parent[i].copy()
-                k = 1
-                for j in range(taille):
-                    k = min(taille-1, rd(k+1, taille-1))
-                    parent = P[(nb_ch + i + k) % self.sx_max_parents]
-                    child[k:] = parent[k:].copy()
-                C.append(child)
-                nb_ch +=  1
-        self.current_offsprings = C[:nb_ch_voulu]
+    def repro(self, Parents, d): # d = nombre de parents
+        child = Parents[0].copy() 
+        nb_chrmsm = self.offspring_size[1]//d # nb_chrmsm : nombre de gènes transmis par chaque parent à l'enfant
+        for i in range(1, d-1):
+            child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
+        # pour ne pas avoir d'erreur, on complète avec le bon nombre de gènes (provenant du dernier parent)
+        child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
+        return child
 
-        '''
-        #print(self.offspring_size)
-        self.current_offspring = np.zeros(self.offspring_size)
-        #print(self.current_offspring)
-        #print(self.current_parents)
-        middle = math.floor(self.offspring_size[1]/2)
-        #print(middle)
-        for i in range(self.offspring_size[0]):
-            parent1 = i%self.number_parents
-            parent2 = (i+1)%self.number_parents
 
-            self.current_offspring[i][0:middle] = self.current_parents[parent1][0:middle]
-            self.current_offspring[i][middle:] = self.current_parents[parent2][middle:]
-        print(self.current_offspring)
-        '''
+    def crossover(self):
+    
+        nb_voulu = self.offspring_size[0]
+        Parents = self.current_parents
+
+        for _ in range(nb_voulu//sum(self.sx_weights)):
+            # On va créer en boucle sum(self.sx_weights) enfants, jusqu'à en avoir le nombre voulu.
+            # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
+            # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
+            # par le poids de la méthode, indiqué dans le tableau self.sx_weights.
+            
+
+            for d in range(2, len(self.sx_weights)+2): # d = nbr of parents pour créer un enfant
+                poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
+
+                for _ in range(poids):
+                    rd_parents = [random.choice(Parents) for _ in range(d)] # choix de d parents aléatoires
+                    child = self.repro(rd_parents) 
+                    self.current_offspring.append(child)
+  
 
     def mutate(self):
         print("mutate")
