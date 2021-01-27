@@ -28,11 +28,13 @@ class Plasmid:
 
         return RotTable(data)
 
-    def __init__(self, signature, rotation_table=RotTable(), trajectory=Traj3D(), sequence=''):
+    def __init__(self, signature, rotation_table=RotTable(), trajectory=Traj3D(), sequence='AAAA'):
         self.signature = signature
         self.sequence = sequence
         self.rotation_table = rotation_table
         self.trajectory = trajectory
+        self.compute()
+
 
     def load(self, filepath):
         self.filepath = filepath
@@ -59,9 +61,10 @@ class Plasmid:
         self.trajectory.compute(self.sequence, self.rotation_table)
 
     def getDistance(self):
-        self.compute()
-        last = self.trajectory.getLastFromTraj()
-        return math.sqrt(last.dot(last))
+        last = self.trajectory.getIndexFromTraj(-1)
+        second = self.trajectory.getIndexFromTraj(1)
+        prelast = self.trajectory.getIndexFromTraj(-2)
+        return math.sqrt(prelast.dot(prelast)) + math.sqrt((second-last).dot(second-prelast))
 
     def getAngle(self):
         pass

@@ -21,8 +21,8 @@ class Traj3D:
     def getTraj(self):
         return self.__Traj3D
 
-    def getLastFromTraj(self):
-        return self.__Traj3D[-1]
+    def getIndexFromTraj(self, idx):
+        return self.__Traj3D[idx]
         
     def compute(self, dna_seq, rot_table):
 

@@ -126,7 +126,7 @@ class Genetic:
                         sigma = self.mutation_table[j][1]
                         
                         while True:
-                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/10)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/100)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -167,8 +167,8 @@ class Genetic:
         self.current_parents = []
 
     def launch(self):
-        for _ in range(self.max_generation):
-            print("Next generation", end=' ')
+        for i in range(self.max_generation):
+            print(f"Generation : {i} : ", end=' ')
             self.current_generation += 1
             self.select()
             self.crossover()
@@ -191,7 +191,7 @@ seq = ''.join(lineList[1:])
 mutation_table= dataForMutation(RotTable())
 indiv = [35.62, 7.2, 34.4, 1.1, 27.7, 8.4, 31.5, 2.6, 34.5, 3.5,33.67, 2.1,29.8, 6.7,36.9, 5.3,40, 5,36, 0.9]
 
-pop_nb = 30
+pop_nb = 50
 
 
 population = []
@@ -213,7 +213,7 @@ def fitness_indiv(indiv, data):
 #     return(math.sqrt(lastVect.dot(lastVect)))
 
 data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
-    "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq], "crossover_data" : [5, 2, 1, 1, 1]}
+    "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq+seq[:2]], "crossover_data" : [5, 2, 1, 1, 1]}
 
 
 
@@ -221,10 +221,10 @@ print(fitness_indiv(indiv, [Traj3D(), seq]))
 
 if __name__ == "__main__":
 
-    gen = Genetic(pop_nb//3,30,population, fitness_indiv, data=data)
+    gen = Genetic(10,100,population, fitness_indiv, data=data)
     gen.launch()
     gen.print()
 
     plasmid = Plasmid("", Plasmid.decodage(gen.evolution_trace[-1][0]), sequence=seq)
-    plasmid.compute()
     plasmid.draw()
+    print(plasmid.getDistance())
