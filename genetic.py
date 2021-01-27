@@ -178,7 +178,7 @@ class Genetic:
                         sigma = self.mutation_table[j][1]
                         
                         while True:
-                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/100)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/1000)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate

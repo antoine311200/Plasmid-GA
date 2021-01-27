@@ -21,10 +21,10 @@ class Plasmid:
         lineList = [line.rstrip('\n') for line in open(filepath)]
         self.sequence = ''.join(lineList[1:])
 
-    def setRotationTable(rotation_table):
+    def setRotationTable(self, rotation_table):
         self.rotation_table = rotation_table
 
-    def setSequence(sequence):
+    def setSequence(self, sequence):
         self.sequence = sequence
 
     def draw(self):
