@@ -2,6 +2,8 @@ import numpy as np
 import math as math
 import random
 
+from math import *
+
 from RotTable import *
 from Traj3D import *
 
@@ -49,8 +51,8 @@ class Genetic:
         trajectory = traj.getTraj()
         for i in range(3):
             # print(trajectory[-1], trajectory[-1][0])
-            dist += abs(trajectory[-1][i])
-        return dist 
+            dist += trajectory[-1][i]**2
+        return sqrt(dist)
 
     def fitness(self, fitness_function):
         self.fitness = fitness_function
@@ -120,9 +122,16 @@ class Genetic:
                     elif random_method == 'gauss bounded':
                         origin = self.mutation_table[j][2]
                         sigma = self.mutation_table[j][1]
-                        mute_rate = max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                        
+                        while True:
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
+                            if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
+                                self.current_offspring[i][j] = mute_rate
+                                break
+                        # if mute_rate == origin-sigma:
 
-                        self.current_offspring[i][j] = mute_rate
+
                     elif random_method == 'triangular':
                         mute_rate = random.triangular(low=self.mutation_table[j][1], high=self.mutation_table[j][2], mode=self.mutation_table[j][3])
                     elif random_method == 'randint':
@@ -238,14 +247,14 @@ population = []
 for i in range(100):
     sample = []
     for j in range(len(mutation_table)):
-        rand = random.uniform(mutation_table[j][1], mutation_table[j][2])
+        rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
         # print(rand)
         sample.append(round(original_sample[j]+rand,5))
     population.append(sample)
 print(population)
 population = np.array(population)
 
-GA = Genetic(14, 100, population, {'mutation_table': mutation_table})
+GA = Genetic(15, 50, population, {'mutation_table': mutation_table})
 GA.launch()
 GA.print()
 
