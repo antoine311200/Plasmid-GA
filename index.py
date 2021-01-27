@@ -8,7 +8,7 @@ from genetic import *
 
 
 def fitness_indiv(indiv, data):
-    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance()
+    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance(data[2])
 
 
 def dataForMutation(rot_tab, mutation_variance):
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     number_population = 30
     number_parents = 12
-    number_generations = 200
+    number_generations = 150
     mutation_variance = 1000
 
 
@@ -50,14 +50,38 @@ if __name__ == "__main__":
         "selection_mode" : "elitist",
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
-        "fitness_data" : [Traj3D(), plasmid.sequence],
+        "fitness_data" : [Traj3D(), plasmid.sequence, 1],
         "crossover_data" : [1, 1, 1, 1, 1]
     }
 
     genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_indiv, data=data)
     genetic_algorithm.launch()
     genetic_algorithm.print()
+    
+    data = {
+        "selection_mode" : "elitist",
+        "crossover_mode" : "normal",
+        "mutation_table" : mutation_table,
+        "fitness_data" : [Traj3D(), plasmid.sequence+plasmid.sequence[:18], 18],
+        "crossover_data" : [1, 1, 1, 1, 1]
+    }
 
-    plasmid.setRotationTable(Plasmid.decodage(genetic_algorithm.evolution_trace[-1][0]))
+    initial_population2 = []
+    average_sample2 = genetic_algorithm.evolution_trace[-1][0]
+
+    for i in range(number_population):
+        sample = []
+        for j in range(sample_size):
+            rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
+            sample.append(round(average_sample2[j]+rand/25,5))
+        initial_population2.append(sample)
+
+    genetic_algorithm2 = Genetic(number_parents, number_generations, initial_population2, fitness_indiv, data=data)
+    genetic_algorithm2.launch()
+    genetic_algorithm2.print()
+
+    # plasmid.compensate(18)
+    plasmid.load("./resources/plasmid_8k.fasta")
+    plasmid.setRotationTable(Plasmid.decodage(genetic_algorithm2.evolution_trace[-1][0]))
     plasmid.compute()
     plasmid.draw()

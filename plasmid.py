@@ -41,7 +41,6 @@ class Plasmid:
         
         lineList = [line.rstrip('\n') for line in open(filepath)]
         self.sequence = ''.join(lineList[1:])
-        self.sequence += self.sequence[:15]
         self.compute()
 
     def encodage(self): #rotTable -> floatlist
@@ -62,11 +61,16 @@ class Plasmid:
     def compute(self):
         self.trajectory.compute(self.sequence, self.rotation_table)
 
-    def getDistance(self):
+    def compensate(self, number):
+        self.number_compensate = number
+        self.sequence += self.sequence[:number]
+        self.compute()
+
+    def getDistance(self, num=1):
         dist = 0
-        for i in range(15):
+        for i in range(num):
             point1 = self.trajectory.getIndexFromTraj(i)
-            point2 = self.trajectory.getIndexFromTraj(-15+i)
+            point2 = self.trajectory.getIndexFromTraj(-num+i)
             var = point1-point2
             dist += math.sqrt(var.dot(var))
         return dist
