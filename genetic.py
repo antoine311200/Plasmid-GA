@@ -73,13 +73,14 @@ class Genetic:
         print(len(child),self.offspring_size[1], child)
         return child
 
+    
 
     def crossover(self):
 
         nb_voulu = self.offspring_size[0]
         Parents = self.current_parents
 
-        for _ in range(nb_voulu//sum(self.sx_weights)):
+        while len(self.current_offspring) < nb_voulu :
             # On va créer en boucle sum(self.sx_weights) enfants, jusqu'à en avoir le nombre voulu.
             # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
             # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
@@ -89,9 +90,6 @@ class Genetic:
                 poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
 
                 for _ in range(poids):
-                    if len(self.current_offspring) >= nb_voulu:
-                        return
-
                     rd_parents = [choice(Parents) for _ in range(d)] # choix de d parents aléatoires
                     child = self.repro(rd_parents, d) 
                     self.current_offspring.append(child)
@@ -134,7 +132,7 @@ class Genetic:
 
 value = [21, 8, 4, 24]
 pop = np.random.randint(low=0, high=15, size=(30,4))
-gen = Genetic(5, 30, pop)
+gen = Genetic(5, 30, pop+15)
 print(pop)
 gen.launch()
 gen.print()
