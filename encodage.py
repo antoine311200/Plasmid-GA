@@ -6,10 +6,11 @@ symetricADN = {"A" : "T", "T" : "A",\
                "C" : "G", "G" : "C"}
 
 def dataForMutation(rot_tab):
-    minmaxList = []
+    mut_table = []
     for dinucleotide in important_dinucleotides :
-        minmaxList += [[rot_tab.getTwistVariance(dinucleotide), rot_tab.getWedgeVariance(dinucleotide)]]
-    return minmaxList
+        mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide)],\
+                       ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide)]]
+    return mut_table
 
 def encodage(rot_tab): #rotTable -> floatlist
     individu = []
@@ -29,4 +30,5 @@ def decodage(indiv): # float_list -> rotTable
 def getSymetric(dinucleotide):
     sym = symetricADN[dinucleotide[1]] + symetricADN[dinucleotide[0]]
     return sym
+
 

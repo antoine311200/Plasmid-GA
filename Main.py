@@ -21,7 +21,7 @@ def main():
     else:
         traj.compute("AAAGGATCTTCTTGAGATCCTTTTTTTCTGCGCGTAATCTGCTGCCAGTAAACGAAAAAACCGCCTGGGGAGGCGGTTTAGTCGAAGGTTAAGTCAG", rot_table)
 
-    print(traj.getTraj())
+    # print(traj.getTraj())
 
     if args.filename:
         traj.draw(args.filename+".png")
