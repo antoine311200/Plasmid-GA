@@ -20,7 +20,7 @@ class Traj3D:
 
     def getTraj(self):
         return self.__Traj3D
-
+        
     def getLastFromTraj(self):
         return self.__Traj3D[-1]
         
