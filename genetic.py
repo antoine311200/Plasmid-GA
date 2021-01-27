@@ -56,7 +56,7 @@ class Genetic:
 
     def fitness(self, fitness_function):
         self.fitness = fitness_function
-    
+
     # elitist selection 
     # roulette selection : p_i = f_i / sum f_j (sur-representativity !!!)
     # rang selection : sort -> index = proportion (smoothing) (convergence time !!!)
@@ -84,9 +84,8 @@ class Genetic:
                         L_gagnant.append(J2)                #on ajoute le gagnant a une liste qu'on rajoutera a la fin a L_tier
                         L_tier[-1].remove(J2)               #on l'enleve du tier precedent (car il a réussi a passer au suivant)
                     else:
-                        L_gagnant.append(J2)
-                        L_tier[-1].remove(J2)
-                        
+                        L_gagnant.append(J1)
+                        L_tier[-1].remove(J1)
                 else:
                     if np.random.random_sample() < self.proba_win:
                         L_gagnant.append(J1)
@@ -107,22 +106,22 @@ class Genetic:
                 L_ajout = L_tier.pop()
             self.current_parents[i] = L_ajout.pop()    #je call des bug ici sorry
     
-    # def select(self):
+    def select(self):
 
-    #     self.current_parents = np.empty((self.number_parents, self.population_size[1]))
-    #     fitness_list = []
-    #     for i in range(self.population_size[0]):
-    #         #print(self.current_population[i])
-    #         fitness_list.append(self.fitness_basic(self.current_population[i]))
-    #     #print(fitness_list)
-    #     self.sorted_idx = np.argsort(fitness_list)
-    #     #print(self.sorted_idx)
-    #     for i in range(self.number_parents):
-    #         self.current_parents[i] = self.current_population[self.sorted_idx[i]]
-    #     self.evolution_trace.append([self.current_population[self.sorted_idx[0]], fitness_list[self.sorted_idx[0]]])
-    #     #self.current_parents = sorted(fitness_list)[:self.number_parents]
-    #     if self.history_parents_enable:
-    #         self.parents_history.append(self.current_parents)
+        self.current_parents = np.empty((self.number_parents, self.population_size[1]))
+        fitness_list = []
+        for i in range(self.population_size[0]):
+            #print(self.current_population[i])
+            fitness_list.append(self.fitness_basic(self.current_population[i]))
+        #print(fitness_list)
+        self.sorted_idx = np.argsort(fitness_list)
+        #print(self.sorted_idx)
+        for i in range(self.number_parents):
+            self.current_parents[i] = self.current_population[self.sorted_idx[i]]
+        self.evolution_trace.append([self.current_population[self.sorted_idx[0]], fitness_list[self.sorted_idx[0]]])
+        #self.current_parents = sorted(fitness_list)[:self.number_parents]
+        if self.history_parents_enable:
+            self.parents_history.append(self.current_parents)
         # print(self.current_parents)
 
     def crossover(self):
@@ -167,7 +166,7 @@ class Genetic:
                         sigma = self.mutation_table[j][1]
                         
                         while True:
-                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/10)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -292,7 +291,7 @@ for i in range(50):
 print(population)
 # population = np.array(population)
 
-GA = Genetic(10, 50, population, {'mutation_table': mutation_table})
+GA = Genetic(10, 100, population, {'mutation_table': mutation_table})
 GA.launch()
 GA.print()
 
