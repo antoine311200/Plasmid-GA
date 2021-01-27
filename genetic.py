@@ -79,7 +79,8 @@ class Genetic:
                     child[k:] = parent[k:].copy()
                 C.append(child)
                 nb_ch +=  1
-        return C[:self.offspring_size]  
+        self.current_offsprings = C[:nb_ch_voulu]
+
         '''
         #print(self.offspring_size)
         self.current_offspring = np.zeros(self.offspring_size)
