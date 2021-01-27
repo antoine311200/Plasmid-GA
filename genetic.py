@@ -3,10 +3,6 @@ import math as math
 
 import random
 
-from RotTable import *
-from Traj3D import *
-from encodage import *
-from plasmid import *
 
 class Genetic:
 
@@ -27,7 +23,7 @@ class Genetic:
 
 
         self.current_generation = 0
-        self.population_size = self.initial_population.shape
+        self.population_size = (len(self.initial_population),  len(self.initial_population[0]))
         self.offspring_size = (self.population_size[0]-self.number_parents, self.population_size[1])
 
         self.history_population_enable = True
@@ -68,7 +64,6 @@ class Genetic:
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
 
-    
     def repro(self, Parents, d): # d = nombre de parents
         child = Parents[0].copy() 
         nb_chrmsm = self.offspring_size[1]//d # nb_chrmsm : nombre de gènes transmis par chaque parent à l'enfant
@@ -76,27 +71,24 @@ class Genetic:
             child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
         # pour ne pas avoir d'erreur, on complète avec le bon nombre de gènes (provenant du dernier parent)
         child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
+        
         return child
 
-
     def crossover(self):
-    
-        nb_voulu = self.offspring_size[0]
-        Parents = self.current_parents
-
-        for _ in range(nb_voulu//sum(self.sx_weights)):
+        while True :
             # On va créer en boucle sum(self.sx_weights) enfants, jusqu'à en avoir le nombre voulu.
             # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
             # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
             # par le poids de la méthode, indiqué dans le tableau self.sx_weights.
-            
 
             for d in range(2, len(self.sx_weights)+2): # d = nbr of parents pour créer un enfant
                 poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
 
                 for _ in range(poids):
-                    rd_parents = [random.choice(Parents) for _ in range(d)] # choix de d parents aléatoires
-                    child = self.repro(rd_parents, d) 
+                    if len(self.current_offspring) >= self.offspring_size[0]  :
+                        return
+                    rd_parents = [random.choice(self.current_parents) for _ in range(d)] # choix de d parents aléatoires
+                    child = self.repro(rd_parents, d)
                     self.current_offspring.append(child)
 
     def mutate(self):
@@ -124,9 +116,9 @@ class Genetic:
                     elif random_method == 'gauss bounded':
                         origin = self.mutation_table[j][2]
                         sigma = self.mutation_table[j][1]
-                        
+                        variance = self.mutation_table[j][3]
                         while True:
-                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/100)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -180,51 +172,3 @@ class Genetic:
     def print(self):
         for i in range(len(self.evolution_trace)):
             print("Generation "+str(i+1)+" (best) : ", self.evolution_trace[i][0], " (error : ", str(round(self.evolution_trace[i][1],4))+")")
-
-
-list = [[1,2,3],[[1,2,3],[4,[4,3],3,2]]]
-
-
-lineList = [line.rstrip('\n') for line in open("./resources/plasmid_8k.fasta")]
-seq = ''.join(lineList[1:])
-
-mutation_table= dataForMutation(RotTable())
-indiv = [35.62, 7.2, 34.4, 1.1, 27.7, 8.4, 31.5, 2.6, 34.5, 3.5,33.67, 2.1,29.8, 6.7,36.9, 5.3,40, 5,36, 0.9]
-
-pop_nb = 50
-
-
-population = []
-for i in range(pop_nb):
-    sample = []
-    for j in range(len(mutation_table)):
-        rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-
-        sample.append(round(indiv[j]+rand,5))
-    population.append(sample)
-population = np.array(population)
-
-def fitness_indiv(indiv, data):
-    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance()
-
-# def fitness_indiv(indiv, data):
-#     data[0].compute(data[1], decodage(indiv))
-#     lastVect = data[0].getLastFromTraj()
-#     return(math.sqrt(lastVect.dot(lastVect)))
-
-data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
-    "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq+seq[:2]], "crossover_data" : [5, 2, 1, 1, 1]}
-
-
-
-print(fitness_indiv(indiv, [Traj3D(), seq]))
-
-if __name__ == "__main__":
-
-    gen = Genetic(10,100,population, fitness_indiv, data=data)
-    gen.launch()
-    gen.print()
-
-    plasmid = Plasmid("", Plasmid.decodage(gen.evolution_trace[-1][0]), sequence=seq)
-    plasmid.draw()
-    print(plasmid.getDistance())

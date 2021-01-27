@@ -41,6 +41,8 @@ class Plasmid:
         
         lineList = [line.rstrip('\n') for line in open(filepath)]
         self.sequence = ''.join(lineList[1:])
+        self.sequence += self.sequence[:2]
+        self.compute()
 
     def encodage(self): #rotTable -> floatlist
         individu = []
