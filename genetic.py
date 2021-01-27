@@ -62,22 +62,67 @@ class Genetic:
     # rang selection : sort -> index = proportion (smoothing) (convergence time !!!)
     # tournament selection : 2 random -> best score (+ probabilty of win) => diversity
 
-    def select(self):
 
+    def select_tournoi(self):
         self.current_parents = np.empty((self.number_parents, self.population_size[1]))
-        fitness_list = []
-        for i in range(self.population_size[0]):
-            #print(self.current_population[i])
-            fitness_list.append(self.fitness_basic(self.current_population[i]))
-        #print(fitness_list)
-        self.sorted_idx = np.argsort(fitness_list)
-        #print(self.sorted_idx)
-        for i in range(self.number_parents):
-            self.current_parents[i] = self.current_population[self.sorted_idx[i]]
-        self.evolution_trace.append([self.current_population[self.sorted_idx[0]], fitness_list[self.sorted_idx[0]]])
-        #self.current_parents = sorted(fitness_list)[:self.number_parents]
-        if self.history_parents_enable:
-            self.parents_history.append(self.current_parents)
+        L_tier = []
+        L_tier.append([[self.current_population[i],fitness(self.current_population[i])] for i in range(self.population_size[0])])
+        
+        #L_tier est la liste des placements, par ex L_tier[0] contient la liste des couples [individu_i,fitness(individu_i)]
+        #qui on perdu des le 1er match, L_tier[1] ceux qui on perdu leur 2em match etc
+        
+        while len(L_tier[-1]) >= 2:  #on fait le tournoi pour placer tout les joueurs (on s'arrête quand on a un gagnant final)
+            L_participant = L_tier[-1] 
+            L_gagnant = []
+            nbr_par = len(L_participant)
+            np.random.shuffle(L_participant) #on melange la liste des participants pour rendre aleatoire les matchs
+
+            for i in range(0,nbr_par//2,1):
+                J1,J2 = L_participant[i],L_participant[i+1]
+                if J1[1] >= J2[1]:
+                    if np.random.random_sample() < self.proba_win: #le moins bon gagne si l'aleatoire est plus petit que self.proba_win
+                        L_gagnant.append(J2)                #on ajoute le gagnant a une liste qu'on rajoutera a la fin a L_tier
+                        L_tier[-1].remove(J2)               #on l'enleve du tier precedent (car il a réussi a passer au suivant)
+                    else:
+                        L_gagnant.append(J2)
+                        L_tier[-1].remove(J2)
+                        
+                else:
+                    if np.random.random_sample() < self.proba_win:
+                        L_gagnant.append(J1)
+                        L_tier[-1].remove(J1)
+                    else:
+                        L_gagnant.append(J2)
+                        L_tier[-1].remove(J2)
+
+            if nbr_par%2 == 1:    #quand on a un nombre impaire de participant, par défaut le dernier participant gagne et passe au tier suivant 
+                L_gagnant.append(L_participant[-1])
+                L_tier[-1].remove(L_participant[-1])
+
+            L_tier.append(L_gagnant)
+        
+        L_ajout = []  
+        for i in range(self.number_parents): #pour faire l'ajout au current_parents, on rajoute les joueurs en commencant par le tier le plus haut
+            if len(L_ajout) == 0:
+                L_ajout = L_tier.pop()
+            self.current_parents[i] = L_ajout.pop()    #je call des bug ici sorry
+    
+    # def select(self):
+
+    #     self.current_parents = np.empty((self.number_parents, self.population_size[1]))
+    #     fitness_list = []
+    #     for i in range(self.population_size[0]):
+    #         #print(self.current_population[i])
+    #         fitness_list.append(self.fitness_basic(self.current_population[i]))
+    #     #print(fitness_list)
+    #     self.sorted_idx = np.argsort(fitness_list)
+    #     #print(self.sorted_idx)
+    #     for i in range(self.number_parents):
+    #         self.current_parents[i] = self.current_population[self.sorted_idx[i]]
+    #     self.evolution_trace.append([self.current_population[self.sorted_idx[0]], fitness_list[self.sorted_idx[0]]])
+    #     #self.current_parents = sorted(fitness_list)[:self.number_parents]
+    #     if self.history_parents_enable:
+    #         self.parents_history.append(self.current_parents)
         # print(self.current_parents)
 
     def crossover(self):
