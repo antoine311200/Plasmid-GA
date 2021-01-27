@@ -6,6 +6,7 @@ import random
 from RotTable import *
 from Traj3D import *
 from encodage import *
+from plasmid import *
 
 class Genetic:
 
@@ -180,18 +181,8 @@ class Genetic:
         for i in range(len(self.evolution_trace)):
             print("Generation "+str(i+1)+" (best) : ", self.evolution_trace[i][0], " (error : ", str(round(self.evolution_trace[i][1],4))+")")
 
-# value = [21, 8, 4, 24]
-# pop = np.random.randint(low=0, high=15, size=(30,4))
-# gen = Genetic(5, 30, pop)
-# print(pop)
-# gen.launch()
-# gen.print()
-#print(np.array(gen.evolution_trace))
-# Add a pattern system
 
 list = [[1,2,3],[[1,2,3],[4,[4,3],3,2]]]
-
-
 
 
 lineList = [line.rstrip('\n') for line in open("./resources/plasmid_8k.fasta")]
@@ -213,11 +204,13 @@ for i in range(pop_nb):
     population.append(sample)
 population = np.array(population)
 
-
 def fitness_indiv(indiv, data):
-    data[0].compute(data[1], decodage(indiv))
-    lastVect = data[0].getLastFromTraj()
-    return(math.sqrt(lastVect.dot(lastVect)))
+    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance()
+
+# def fitness_indiv(indiv, data):
+#     data[0].compute(data[1], decodage(indiv))
+#     lastVect = data[0].getLastFromTraj()
+#     return(math.sqrt(lastVect.dot(lastVect)))
 
 data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
     "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq], "crossover_data" : [5, 2, 1, 1, 1]}
@@ -232,8 +225,6 @@ if __name__ == "__main__":
     gen.launch()
     gen.print()
 
-
-    rot_table = decodage(gen.evolution_trace[-1][0])
-    traj = Traj3D()
-    traj.compute(seq, rot_table)
-    traj.draw("se")
+    plasmid = Plasmid("", Plasmid.decodage(gen.evolution_trace[-1][0]), sequence=seq)
+    plasmid.compute()
+    plasmid.draw()
