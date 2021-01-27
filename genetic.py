@@ -13,7 +13,7 @@ seq = ''.join(lineList[1:])
 
 class Genetic:
 
-    def __init__(self, number_parents, max_generation, population, data):
+    def __init__(self, number_parents, max_generation, population, data={'mutation_table':[]}):
         self.data = data
         self.number_parents = number_parents
         self.max_generation = max_generation
@@ -36,7 +36,7 @@ class Genetic:
         self.current_offspring = []
         self.evolution_trace = []
 
-    def fitness_basic(self, cpl): #dpl 
+    def fitness_basic(self, cpl): #dpl
         # apl = zip(cpl, dpl)
         # cps = len(cpl)
         # value = 0
@@ -106,11 +106,9 @@ class Genetic:
                     random_method = self.mutation_table[j][0]
 
                     if random_method == 'gauss':
-                        while True:
-                            mute_rate = random.gauss(mu=self.mutation_table[j][1], sigma=self.mutation_table[j][2])
-                            #print(mute_rate, self.current_offspring[i][j])
-                            self.current_offspring[i][j] += mute_rate
-                            break
+                        mute_rate = random.gauss(mu=self.mutation_table[j][1], sigma=self.mutation_table[j][2])
+                        #print(mute_rate, self.current_offspring[i][j])
+                        self.current_offspring[i][j] += mute_rate
                     elif random_method == 'uniform':
                         # while True:
                         a,b = self.mutation_table[j][1], self.mutation_table[j][2]
@@ -135,15 +133,11 @@ class Genetic:
                     elif random_method == 'triangular':
                         mute_rate = random.triangular(low=self.mutation_table[j][1], high=self.mutation_table[j][2], mode=self.mutation_table[j][3])
                     elif random_method == 'randint':
-                        while True:
-                            mute_rate = random.randint(a=self.mutation_table[j][1], b=self.mutation_table[j][2])
-                            self.current_offspring[i][j] += mute_rate
-                            break
+                        mute_rate = random.randint(a=self.mutation_table[j][1], b=self.mutation_table[j][2])
+                        self.current_offspring[i][j] += mute_rate
                     elif random_method == 'choice':
-                        while True:
-                            mute_rate = random.choice(list=self.mutation_table[j][1])
-                            self.current_offspring[i][j] += mute_rate
-                            break
+                        mute_rate = random.choice(list=self.mutation_table[j][1])
+                        self.current_offspring[i][j] += mute_rate
                     else:
                         mute_rate = 0.02
                         self.current_offspring[i][j] += mute_rate
@@ -164,7 +158,7 @@ class Genetic:
             fitness_list.append(self.fitness_basic(self.current_population[i]))
         self.sorted_idx = np.argsort(fitness_list)
         return self.current_population[self.sorted_idx[0]]
-        
+
     def clear(self):
         self.current_offspring = []
         self.current_parents = []
@@ -244,7 +238,7 @@ for c in __ORIGINAL_ROT_TABLE:
 print(mutation_table)
 
 population = []
-for i in range(100):
+for i in range(50):
     sample = []
     for j in range(len(mutation_table)):
         rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
@@ -254,7 +248,7 @@ for i in range(100):
 print(population)
 population = np.array(population)
 
-GA = Genetic(15, 50, population, {'mutation_table': mutation_table})
+GA = Genetic(10, 50, population, {'mutation_table': mutation_table})
 GA.launch()
 GA.print()
 
