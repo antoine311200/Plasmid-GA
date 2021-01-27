@@ -51,7 +51,7 @@ if __name__ == "__main__":
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
         "fitness_data" : [Traj3D(), plasmid.sequence],
-        "crossover_data" : [5, 2, 1, 1, 1]
+        "crossover_data" : [1, 1, 1, 1, 1]
     }
 
     genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_indiv, data=data)

@@ -7,6 +7,8 @@ from Traj3D import *
 This class is used for modelising a plasmide base on its sequence or the filename containing
 its sequence
 '''
+
+
 class Plasmid:
     important_dinucleotides = ["AA", "AC", "AG", "AT", "CA", "CC", "CG", "GA", "GC", "TA"]
 
@@ -66,7 +68,7 @@ class Plasmid:
         last = self.trajectory.getIndexFromTraj(-1)
         second = self.trajectory.getIndexFromTraj(1)
         prelast = self.trajectory.getIndexFromTraj(-2)
-        return math.sqrt(prelast.dot(prelast)) + math.sqrt((second-last).dot(second-prelast))
+        return math.sqrt(prelast.dot(prelast)) + math.sqrt((second-last).dot(second-last))
 
     def getAngle(self):
         pass
