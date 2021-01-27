@@ -26,9 +26,9 @@ if __name__ == "__main__":
     # Genetic algorithm parameters
 
     number_population = 30
-    number_parents = 7
-    number_generations = 10
-    mutation_variance = 100
+    number_parents = 12
+    number_generations = 100
+    mutation_variance = 1000
 
 
     mutation_table = dataForMutation(RotTable(), mutation_variance)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
         "fitness_data" : [Traj3D(), plasmid.sequence],
-        "crossover_data" : [5, 2, 1, 1, 1]
+        "crossover_data" : [1, 1, 1, 1, 1]
     }
 
     genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_indiv, data=data)

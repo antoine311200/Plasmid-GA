@@ -55,11 +55,11 @@ class Genetic:
         for i in range(self.population_size[0]):
             fitness_list.append(self.fitness(self.current_population[i]))
 
-        L_indice = np.argsort(fitness_list)
+        index_list = np.argsort(fitness_list)
         for i in range(self.number_parents):
-            self.current_parents[i] = self.current_population[L_indice[i]]
+            self.current_parents[i] = self.current_population[index_list[i]]
         
-        self.evolution_trace.append([self.current_population[L_indice[0]], fitness_list[L_indice[0]]])
+        self.evolution_trace.append([self.current_population[index_list[0]], fitness_list[index_list[0]]])
         #self.current_parents = sorted(fitness_list)[:self.number_parents]
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
