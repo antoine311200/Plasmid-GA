@@ -27,8 +27,8 @@ class Genetic:
         self.evolution_trace = []
 
 
-        self.sx_weights = [5, 2, 1, 1, 1] # Pondération des différents modes de reproduction
-        '''NB : la somme des coeff doit diviser le nombre d'enfants voulus à chaque génération'''
+        self.sx_weights = [1, 1, 1, 1, 1] # Pondération des différents modes de reproduction
+    
 
     def fitness_basic(self, cpl, dpl): 
         apl = zip(cpl, dpl)
@@ -70,11 +70,12 @@ class Genetic:
             child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
         # pour ne pas avoir d'erreur, on complète avec le bon nombre de gènes (provenant du dernier parent)
         child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
+        print(len(child),self.offspring_size[1], child)
         return child
 
 
     def crossover(self):
-    
+
         nb_voulu = self.offspring_size[0]
         Parents = self.current_parents
 
@@ -83,21 +84,22 @@ class Genetic:
             # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
             # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
             # par le poids de la méthode, indiqué dans le tableau self.sx_weights.
-            
 
             for d in range(2, len(self.sx_weights)+2): # d = nbr of parents pour créer un enfant
                 poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
 
                 for _ in range(poids):
-                    rd_parents = [random.choice(Parents) for _ in range(d)] # choix de d parents aléatoires
-                    child = self.repro(rd_parents) 
+                    if len(self.current_offspring) >= nb_voulu:
+                        return
+
+                    rd_parents = [choice(Parents) for _ in range(d)] # choix de d parents aléatoires
+                    child = self.repro(rd_parents, d) 
                     self.current_offspring.append(child)
+
+     
   
 
     def mutate(self):
-        print("mutate")
-        #print(self.current_offspring)
-
         for i in range(self.offspring_size[0]):
             for j in range(self.offspring_size[1]):
                 self.current_offspring[i][j] += np.random.randint(-2,2)
