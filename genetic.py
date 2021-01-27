@@ -22,7 +22,7 @@ class Genetic:
         self.crossover_mode = data['crossover_mode']
         self.fitness_function = fitness_function
 
-        self.sx_weights= [5, 2, 1, 1, 1]
+        self.sx_weights= data["crossover_data"]
 
 
         self.current_generation = 0
@@ -156,7 +156,6 @@ class Genetic:
                 for j in range(self.offspring_size[1]):
                     self.current_offspring[i][j] += np.random.randint(self.mutation_table[j].min, self.mutation_table[j].max)
         
-            
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
     
     def bestfit(self):
@@ -221,19 +220,20 @@ def fitness_indiv(indiv, data):
     return(math.sqrt(lastVect.dot(lastVect)))
 
 data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
-    "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq]}
+    "mutation_table" : dataForMutation(RotTable()), "fitness_data" : [Traj3D(), seq], "crossover_data" : [5, 2, 1, 1, 1]}
 
 
 
 print(fitness_indiv(indiv, [Traj3D(), seq]))
 
+if __name__ == "__main__":
 
-gen = Genetic(pop_nb//3,30,population, fitness_indiv, data=data)
-gen.launch()
-gen.print()
+    gen = Genetic(pop_nb//3,30,population, fitness_indiv, data=data)
+    gen.launch()
+    gen.print()
 
 
-rot_table = decodage(gen.evolution_trace[-1][0])
-traj = Traj3D()
-traj.compute(seq, rot_table)
-traj.draw("se")
+    rot_table = decodage(gen.evolution_trace[-1][0])
+    traj = Traj3D()
+    traj.compute(seq, rot_table)
+    traj.draw("se")
