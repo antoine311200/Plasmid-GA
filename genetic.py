@@ -22,6 +22,9 @@ class Genetic:
         self.crossover_mode = data['crossover_mode']
         self.fitness_function = fitness_function
 
+        self.sx_weights= [5, 2, 1, 1, 1]
+
+
         self.current_generation = 0
         self.population_size = self.initial_population.shape
         self.offspring_size = (self.population_size[0]-self.number_parents, self.population_size[1])
@@ -65,42 +68,38 @@ class Genetic:
             self.parents_history.append(self.current_parents)
 
     
-    # def crossover(self, nb_ch_voulu):
-    #     P = self.current_parents
-    #     C = []
-    #     nb_ch = 0
-    #     taille = self.offspring_size[1]
-    #     while nb_ch < nb_ch_voulu :
-    #         sx_nb_par = nb_ch % self.sx_max_par
-    #         sx_weight = self.sx_weigths[nb_ch % self.sx_max_parents]
-    #         for i in range(sx_weight): # on a pondéré le nombre d'enfants
-    #             child = parent[i].copy()
-    #             k = 1
-    #             for j in range(taille):
-    #                 k = min(taille-1, rd(k+1, taille-1))
-    #                 parent = P[(nb_ch + i + k) % self.sx_max_parents]
-    #                 child[k:] = parent[k:].copy()
-    #             C.append(child)
-    #             nb_ch +=  1
-    #     self.current_offsprings = C[:nb_ch_voulu]
-    
-    def crossover(self):
-        #print(self.offspring_size)
-        self.current_offspring = np.zeros(self.offspring_size)
-        #print(self.current_offspring)
-        #print(self.current_parents)
-        middle = math.floor(self.offspring_size[1]/2)
-        #print(middle)
-        for i in range(self.offspring_size[0]):
-            parent1 = i%self.number_parents
-            parent2 = (i+1)%self.number_parents
+    def repro(self, Parents, d): # d = nombre de parents
+        child = Parents[0].copy() 
+        nb_chrmsm = self.offspring_size[1]//d # nb_chrmsm : nombre de gènes transmis par chaque parent à l'enfant
+        for i in range(1, d-1):
+            child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
+        # pour ne pas avoir d'erreur, on complète avec le bon nombre de gènes (provenant du dernier parent)
+        child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
+        return child
 
-            self.current_offspring[i][0:middle] = self.current_parents[parent1][0:middle]
-            self.current_offspring[i][middle:] = self.current_parents[parent2][middle:]
-        # print(self.current_offspring)
+
+    def crossover(self):
+    
+        nb_voulu = self.offspring_size[0]
+        Parents = self.current_parents
+
+        for _ in range(nb_voulu//sum(self.sx_weights)):
+            # On va créer en boucle sum(self.sx_weights) enfants, jusqu'à en avoir le nombre voulu.
+            # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
+            # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
+            # par le poids de la méthode, indiqué dans le tableau self.sx_weights.
+            
+
+            for d in range(2, len(self.sx_weights)+2): # d = nbr of parents pour créer un enfant
+                poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
+
+                for _ in range(poids):
+                    rd_parents = [random.choice(Parents) for _ in range(d)] # choix de d parents aléatoires
+                    child = self.repro(rd_parents, d) 
+                    self.current_offspring.append(child)
 
     def mutate(self):
-        print("mutate")
+        print("mutate", end= '  ')
         #print(self.current_offspring)
         if self.mutation_table != None:
             for i in range(self.offspring_size[0]):
@@ -126,7 +125,7 @@ class Genetic:
                         sigma = self.mutation_table[j][1]
                         
                         while True:
-                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                            mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/10)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -161,11 +160,7 @@ class Genetic:
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
     
     def bestfit(self):
-        fitness_list = []
-        for i in range(self.population_size[0]):
-            fitness_list.append(self.fitness(self.current_population[i]))
-        self.sorted_idx = np.argsort(fitness_list)
-        return self.current_population[self.sorted_idx[0]]
+        return round(self.evolution_trace[-1][1],4)
         
     def clear(self):
         self.current_offspring = []
@@ -173,13 +168,13 @@ class Genetic:
 
     def launch(self):
         for _ in range(self.max_generation):
-            print("Next generation")
+            print("Next generation", end=' ')
             self.current_generation += 1
             self.select()
             self.crossover()
             self.mutate()
             #print(self.current_population)
-            # print(self.bestfit())
+            print(self.bestfit())
             self.clear()
 
     def print(self):
@@ -206,8 +201,11 @@ seq = ''.join(lineList[1:])
 mutation_table= dataForMutation(RotTable())
 indiv = [35.62, 7.2, 34.4, 1.1, 27.7, 8.4, 31.5, 2.6, 34.5, 3.5,33.67, 2.1,29.8, 6.7,36.9, 5.3,40, 5,36, 0.9]
 
+pop_nb = 30
+
+
 population = []
-for i in range(15):
+for i in range(pop_nb):
     sample = []
     for j in range(len(mutation_table)):
         rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
@@ -230,7 +228,7 @@ data = {"selection_mode" : "elitist", "crossover_mode" : "normal",\
 print(fitness_indiv(indiv, [Traj3D(), seq]))
 
 
-gen = Genetic(5,10,population, fitness_indiv, data=data)
+gen = Genetic(pop_nb//3,30,population, fitness_indiv, data=data)
 gen.launch()
 gen.print()
 
