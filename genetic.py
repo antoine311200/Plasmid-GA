@@ -73,7 +73,7 @@ class Genetic:
         print(len(child),self.offspring_size[1], child)
         return child
 
-    
+
 
     def crossover(self):
 
@@ -90,6 +90,8 @@ class Genetic:
                 poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
 
                 for _ in range(poids):
+                    if len(self.current_offspring) >= nb_voulu :
+                        return
                     rd_parents = [choice(Parents) for _ in range(d)] # choix de d parents aléatoires
                     child = self.repro(rd_parents, d) 
                     self.current_offspring.append(child)
