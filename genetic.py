@@ -26,6 +26,9 @@ class Genetic:
         self.current_offspring = []
         self.evolution_trace = []
 
+        self.sx_max_parents = 5 # Nombre maximal de parents d'un même individu
+        self.sx_weights = [5, 2, 1, 1, 0] # Pondération des différents modes de reproduction
+
     def fitness_basic(self, cpl, dpl): 
         apl = zip(cpl, dpl)
         cps = len(cpl)
@@ -59,7 +62,25 @@ class Genetic:
             self.parents_history.append(self.current_parents)
         print(self.current_parents)
 
-    def crossover(self):
+    def crossover(self, nb_ch_voulu):
+        P = self.current_parents
+        C = []
+        nb_ch = 0
+        taille = self.offspring_size[1]
+        while nb_ch < nb_ch_voulu :
+            sx_nb_par = nb_ch % self.sx_max_par
+            sx_weight = self.sx_weigths[nb_ch % self.sx_max_parents]
+            for i in range(sx_weight): # on a pondéré le nombre d'enfants
+                child = parent[i].copy()
+                k = 1
+                for j in range(taille):
+                    k = min(taille-1, rd(k+1, taille-1))
+                    parent = P[(nb_ch + i + k) % self.sx_max_parents]
+                    child[k:] = parent[k:].copy()
+                C.append(child)
+                nb_ch +=  1
+        return C[:self.offspring_size]  
+        '''
         #print(self.offspring_size)
         self.current_offspring = np.zeros(self.offspring_size)
         #print(self.current_offspring)
@@ -73,6 +94,7 @@ class Genetic:
             self.current_offspring[i][0:middle] = self.current_parents[parent1][0:middle]
             self.current_offspring[i][middle:] = self.current_parents[parent2][middle:]
         print(self.current_offspring)
+        '''
 
     def mutate(self):
         print("mutate")
