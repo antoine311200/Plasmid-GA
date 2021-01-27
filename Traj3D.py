@@ -66,5 +66,6 @@ class Traj3D:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.plot(x,y,z)
-        ax.scatter(np.array([xyz[0][0],xyz[-1][0]]),np.array([xyz[0][1],xyz[-1][1]]),np.array([xyz[0][2],xyz[-1][2]]), color='red')
+        ax.scatter([xyz[0][0],xyz[-16][0]],[xyz[0][1],xyz[-16][1]],[xyz[0][2],xyz[-16][2]], color='green')
+        ax.scatter([xyz[0][0],xyz[-1][0]],[xyz[0][1],xyz[-1][1]],[xyz[0][2],xyz[-1][2]], color='red')
         plt.show()

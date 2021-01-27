@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     number_population = 30
     number_parents = 12
-    number_generations = 100
+    number_generations = 200
     mutation_variance = 1000
 
 
