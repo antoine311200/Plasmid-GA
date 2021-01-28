@@ -42,7 +42,7 @@ class Plasmid:
     def load(self, filepath):
         self.filepath = filepath
         
-        lineList = [line.rstrip('\n') for line in open(filepath)]
+        lineList = [line.rstrip('\n') for line in open(self.filepath)]
         self.sequence = ''.join(lineList[1:])
         self.sequence += self.sequence[:self.number_repli]
         self.compute()
@@ -55,6 +55,15 @@ class Plasmid:
 
     def setRotationTable(self, rotation_table):
         self.rotation_table = rotation_table
+
+    def setFolding(self, num_repli):
+        self.number_repli = num_repli
+
+        lineList = [line.rstrip('\n') for line in open(self.filepath)]
+
+        self.sequence = ''.join(lineList[1:])
+        self.sequence += self.sequence[:self.number_repli]
+        self.compute()
 
     def setSequence(self, sequence):
         self.sequence = sequence
