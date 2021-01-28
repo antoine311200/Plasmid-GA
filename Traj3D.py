@@ -66,6 +66,17 @@ class Traj3D:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.plot(x,y,z)
-        ax.scatter([xyz[0][0],xyz[-trueIdxLast-1][0]],[xyz[0][1],xyz[-trueIdxLast-1][1]],[xyz[0][2],xyz[-trueIdxLast-1][2]], color='green')
-        ax.scatter([xyz[0][0],xyz[-1][0]],[xyz[0][1],xyz[-1][1]],[xyz[0][2],xyz[-1][2]], color='red')
+        
+        ax.scatter([xyz[0][0]], [xyz[0][1]], [xyz[0][2]], color='blue')
+        ax.text(xyz[0][0],xyz[0][1],xyz[0][2], 'origin')
+
+        ax.scatter([xyz[-1-trueIdxLast][0]], [xyz[-1-trueIdxLast][1]], [xyz[-1-trueIdxLast][2]], color='red')
+        ax.text(xyz[-1-trueIdxLast][0],xyz[-1-trueIdxLast][1],xyz[-1-trueIdxLast][2], 'end')
+
+        ax.scatter([xyz[trueIdxLast-1][0]], [xyz[trueIdxLast-1][1]], [xyz[trueIdxLast-1][2]], color='green')
+        ax.text(xyz[trueIdxLast-1][0],xyz[trueIdxLast-1][1],xyz[trueIdxLast-1][2], 'tip2')
+
+        ax.scatter([xyz[-1][0]], [xyz[-1][1]], [xyz[-1][2]], color='green')
+        ax.text(xyz[-1][0],xyz[-1][1],xyz[-1][2], 'tip1')
+        
         plt.show()

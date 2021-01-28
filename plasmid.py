@@ -100,8 +100,8 @@ class Plasmid:
             point1 = self.trajectory.getIndexFromTraj(i)
             point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
             var = point1-point2
-            dist += math.sqrt(var.dot(var)) # correspond à la norme de var
-        return dist/self.number_repli
+            dist += var.dot(var) # correspond à la norme de var
+        return math.sqrt(dist)/self.number_repli
 
 
 def fitness_for_plasmid(indiv, data):
@@ -110,6 +110,24 @@ def fitness_for_plasmid(indiv, data):
 def data_for_mutation(rot_tab, mutation_dispersion):
     mut_table = []
     for dinucleotide in Plasmid.important_dinucleotides :
+
+        twist_average   = rot_tab.getTwist(dinucleotide)
+        twist_variance  = rot_tab.getTwistVariance(dinucleotide)
+        twist_low       = round(twist_average - twist_variance,5)
+        twist_high      = round(twist_average + twist_variance,5)
+        
+        wedge_average   = rot_tab.getWedge(dinucleotide)
+        wedge_variance  = rot_tab.getWedgeVariance(dinucleotide)
+        wedge_low       = round(wedge_average - wedge_variance,5)
+        wedge_high      = round(wedge_average + wedge_variance,5)
+
+        print('Twist : ', twist_average, twist_variance, twist_low, twist_high)
+        print('Wedge : ', wedge_average, wedge_variance, wedge_low, wedge_high)
+
+        # mut_table += [ # -1/mutation_dispersion, 1/mutation_dispersion
+        #     ['uniform bounded', -twist_variance, twist_variance, twist_low, twist_high],
+        #     ['uniform bounded', -wedge_variance, wedge_variance, wedge_low, wedge_high]
+        # ]
         mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
                        ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
     return mut_table

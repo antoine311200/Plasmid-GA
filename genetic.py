@@ -23,9 +23,12 @@ class Genetic:
             launch permet de lancer le calcul avec max_generation générations
             print donne le dernier meilleurs individus de la derniere génération
     """
-    def __init__(self, number_parents, max_generation, population, fitness_function, data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1]}):
+    def __init__(self, number_parents, max_generation, population, fitness_function, data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1,1,1,1]}):
         
-        self.data = data
+        self.data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1,1,1,1]}
+        for (k,v) in data.items():
+            self.data[k] = v
+        
         self.number_parents = number_parents
         self.max_generation = max_generation
         self.initial_population = population
@@ -39,14 +42,14 @@ class Genetic:
             "fitness_data" : un liste de donnée qui sera mise en paramètre de la fitness_function, None si il n'y en a pas besoin
 
         """
-        self.mutation_table = data['mutation_table']
-        self.fitness_data = data['fitness_data']
-        self.has_fitness_data = (data['fitness_data'] != None)
-        self.selection_mode = data['selection_mode']
-        self.crossover_mode = data['crossover_mode']
+        self.mutation_table = self.data['mutation_table']
+        self.fitness_data = self.data['fitness_data']
+        self.has_fitness_data = (self.data['fitness_data'] != None)
+        self.selection_mode = self.data['selection_mode']
+        self.crossover_mode = self.data['crossover_mode']
         self.fitness_function = fitness_function
 
-        self.sx_weights= data["crossover_data"]
+        self.sx_weights= self.data["crossover_data"]
 
 
         self.current_generation = 0
@@ -281,18 +284,35 @@ class Genetic:
                     # Distribution uniforme
                     elif random_method == 'uniform':
                         a,b = self.mutation_table[j][1], self.mutation_table[j][2]
-                        origin = self.mutation_table[j][3]
+                        # origin = self.mutation_table[j][3]
                         mute_rate = random.uniform(a, b)
 
-                        if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
-                            self.current_offspring[i][j] += mute_rate
+                        # if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
+                        self.current_offspring[i][j] += mute_rate
+                    
+                    # Distribution uniforme bornée
+                    elif random_method == 'uniform bounded':
+
+                        vmin,vmax=self.mutation_table[j][1], self.mutation_table[j][2]
+                        a,b = self.mutation_table[j][3], self.mutation_table[j][4]
+
+                        l = 0
+                        while True:
+                            l+=1
+                            if l>=10:
+                                print(self.current_offspring[i][j], a, b)
+                            mute_rate = random.uniform(vmin, vmax)
+                            if self.current_offspring[i][j]+mute_rate >= a and self.current_offspring[i][j]+mute_rate <= b:
+                                self.current_offspring[i][j] += mute_rate
+                                break
                     
                     # Distribution gaussienne restreinte à un intervalle
                     elif random_method == 'gauss bounded':
 
-                        origin = self.mutation_table[j][2]
                         sigma = self.mutation_table[j][1]
+                        origin = self.mutation_table[j][2]
                         variance = self.mutation_table[j][3]
+
                         while True:
                             mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
