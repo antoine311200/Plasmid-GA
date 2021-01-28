@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     # Genetic algorithm parameters
 
-    number_population = 50
+    number_population = 40
     number_parents = 20
     number_generations = 300
 
@@ -24,13 +24,13 @@ if __name__ == "__main__":
 
     #paramete intra Genetic :
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
-    selection_mode = "tournoi"
+    selection_mode = "fulltournoi"
 
     #Seul normal est disponible
     crossover_mode = "normal"  
 
     #Correspond au nombre d'enfant par méthode de crossover (par nombre de parent)
-    crossover_data = [0,0,0,1] 
+    crossover_data = [1,0,0,1] 
     # [1] -> seulement 2 parents
     # [1,1,1] -> 2, 3 et 4 parents équirepartis
     # [3,0,1] -> 25% 4 parents 75% 2 parents

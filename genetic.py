@@ -100,7 +100,7 @@ class Genetic:
             self.current_parents[i] = self.current_population[L_indice[i]]
 
         #Sauvegarde l'historique de l'algorithme génétique
-        self.evolution_trace.append([self.current_population[L_indice[0]], fitness_list[L_indice[0]]])
+        self.evolution_trace.append([self.current_population[L_indice[0]], fitness_list[L_indice[0]], sum(fitness_list)/self.population_size[0]])
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
 
@@ -218,7 +218,7 @@ class Genetic:
             self.current_parents[i] = L_ajout.pop()[0]
         
         #Sauvegarde l'historique de l'algorithme génétique
-        self.evolution_trace.append([self.current_population[L_indice[0]], fitness_list[L_indice[0]]])
+        self.evolution_trace.append([self.current_population[L_indice[0]], fitness_list[L_indice[0]], sum(fitness_list)/self.population_size[0]])
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
 
