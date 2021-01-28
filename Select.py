@@ -38,6 +38,9 @@ def f_select_elit(fitness, number_parents, L_popul):
 # il faudrait rajouter l'objet self.proba_win (la chance de gagner un match meme si on devrait le perdre) dans la class
 # (ou def une variable global)
 
+# Cette fonction selectionne les survivants via un tournoi, elle fait s'affronter tout les individus qui ont gagnés jusque là pour
+# decider de qui va au tier suivant, puis on choisi les survivants en commencant par le dernier tier, et on descend dans les tiers jusqu'a
+# avoir le nombre de survivant requis
 def select_tournoi(self):
 
     self.proba_win = 0.1
