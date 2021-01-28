@@ -15,14 +15,14 @@ if __name__ == "__main__":
 
     number_population = 50
     number_parents = 20
-    number_generations = 350
+    number_generations = 500
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
-    mutation_dispersion = 50
+    mutation_dispersion = 2000
 
     # nombre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
-    number_repliment = 100
+    number_repliment = 50
 
     #paramete intra Genetic :
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
@@ -42,6 +42,7 @@ if __name__ == "__main__":
     plasmid.load("./resources/plasmid_8k.fasta")
 
     mutation_table = data_for_mutation(RotTable(), mutation_dispersion)
+
     average_sample = plasmid.encodage()
     sample_size = len(average_sample)
 
@@ -52,8 +53,13 @@ if __name__ == "__main__":
     for i in range(number_population):
         sample = []
         for j in range(sample_size):
-            rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample[j]+rand,5))
+            origin = mutation_table[j][2]
+            sigma = mutation_table[j][1]
+            # while True:
+            mute_rate = random.uniform(-sigma, sigma)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
+                # if average_sample[j]+mute_rate >= origin-sigma and average_sample[j]+mute_rate <= origin+sigma:
+            sample.append(round(average_sample[j]+mute_rate,5))
+                    # break
         initial_population.append(sample)
 
     data = {

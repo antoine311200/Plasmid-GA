@@ -296,11 +296,11 @@ class Genetic:
                         vmin,vmax=self.mutation_table[j][1], self.mutation_table[j][2]
                         a,b = self.mutation_table[j][3], self.mutation_table[j][4]
 
-                        l = 0
+                        # l = 0
                         while True:
-                            l+=1
-                            if l>=10:
-                                print(self.current_offspring[i][j], a, b)
+                            # l+=1
+                            # if l>=10:
+                            #     print(self.current_offspring[i][j], a, b)
                             mute_rate = random.uniform(vmin, vmax)
                             if self.current_offspring[i][j]+mute_rate >= a and self.current_offspring[i][j]+mute_rate <= b:
                                 self.current_offspring[i][j] += mute_rate
@@ -313,7 +313,11 @@ class Genetic:
                         origin = self.mutation_table[j][2]
                         variance = self.mutation_table[j][3]
 
+                        l = 0
                         while True:
+                            l+=1
+                            if l>=10:
+                                print(self.current_offspring[i][j], origin-sigma, origin+sigma)
                             mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate

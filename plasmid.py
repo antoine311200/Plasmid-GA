@@ -100,8 +100,8 @@ class Plasmid:
             point1 = self.trajectory.getIndexFromTraj(i)
             point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
             var = point1-point2
-            dist += var.dot(var) # correspond à la norme de var
-        return math.sqrt(dist)/self.number_repli
+            dist += math.sqrt(var.dot(var)) # correspond à la norme de var
+        return dist/self.number_repli
 
 
 def fitness_for_plasmid(indiv, data):
