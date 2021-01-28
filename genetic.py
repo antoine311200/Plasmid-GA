@@ -194,72 +194,98 @@ class Genetic:
                     child = self.repro(rd_parents, d)
                     self.current_offspring.append(child)
 
+    ''' Méthode : mutate
+        Cette méthode est l'opérateur de mutation de l'algorithme génétique.
+        Elle ne prend pas d'argument et utilise la table de mutation fournie dans les data
+        au moment de créer une nouvelle instance de la classe Genetic.
+        Pour chaque gène de chaque individu, on applique une mutation basée sur la distribution
+        donnée dans la table de mutation. Dans le cas où il n'y aurait pas de table de mutation,
+        on applique seulement une mutation uniforme sur un intervalle réduit.
+
+        Voici la syntaxe pour les éléments de la table de mutation en fonction de la distribution
+        de probabilité choisie : 
+            - gauss             -> 'gauss', mu (float, la moyenne), sigma (float, la variance)
+            - uniform           -> 'uniform', min (float), max (float)
+            - gauss bounded     -> 'gauss bounded', sigma (float, la variance), origin (float, centre de l'intervall de taill 2 sigma), factor (float, )
+            - triangular        -> 'triangular', low (float), high (float), mode (float)
+            - randint           -> 'randint', min (int), max (int)
+            - choices           -> 'choice', list (float list)
+    '''
     def mutate(self):
-        #print(self.current_offspring)
         if self.mutation_table != None:
             for i in range(self.offspring_size[0]):
                 for j in range(self.offspring_size[1]):
                     random_method = self.mutation_table[j][0]
 
+                    # Distribution gaussienne
                     if random_method == 'gauss':
-                        while True:
-                            mute_rate = random.gauss(mu=self.mutation_table[j][1], sigma=self.mutation_table[j][2])
-                            #print(mute_rate, self.current_offspring[i][j])
-                            self.current_offspring[i][j] += mute_rate
-                            break
+                        mute_rate = random.gauss(mu=self.mutation_table[j][1], sigma=self.mutation_table[j][2])
+                        self.current_offspring[i][j] += mute_rate
+
+                    # Distribution uniforme
                     elif random_method == 'uniform':
-                        # while True:
                         a,b = self.mutation_table[j][1], self.mutation_table[j][2]
                         origin = self.mutation_table[j][3]
                         mute_rate = random.uniform(a, b)
-                        # print(mute_rate, self.current_offspring[i][j])
+
                         if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
                             self.current_offspring[i][j] += mute_rate
+                    
+                    # Distribution gaussienne restreinte à un intervalle
                     elif random_method == 'gauss bounded':
+
                         origin = self.mutation_table[j][2]
                         sigma = self.mutation_table[j][1]
                         variance = self.mutation_table[j][3]
                         while True:
                             mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
-                            # print(self.current_offspring[i][j], mute_rate, origin-sigma, origin+sigma)
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
                                 break
-                        # if mute_rate == origin-sigma:
-
-
+                    
+                    # Distribution triangulaire
                     elif random_method == 'triangular':
                         mute_rate = random.triangular(low=self.mutation_table[j][1], high=self.mutation_table[j][2], mode=self.mutation_table[j][3])
                     elif random_method == 'randint':
-                        while True:
-                            mute_rate = random.randint(a=self.mutation_table[j][1], b=self.mutation_table[j][2])
-                            self.current_offspring[i][j] += mute_rate
-                            break
+                        mute_rate = random.randint(a=self.mutation_table[j][1], b=self.mutation_table[j][2])
+                        self.current_offspring[i][j] += mute_rate
+
+                    # Choix d'un mute rate parmi une liste de floatant
                     # elif random_method == 'choice':
-                    #     while True:
-                    #         mute_rate = random.choice(list=self.mutation_table[j][1])
-                    #         self.current_offspring[i][j] += mute_rate
-                    #         break
+                        # mute_rate = random.choice(list=self.mutation_table[j][1])
+                        # self.current_offspring[i][j] += mute_rate
                     else:
-                        mute_rate = 0.02
+                        mute_rate = random.uniform(-0.02, 0.02)
                         self.current_offspring[i][j] += mute_rate
                     
                     self.current_offspring[i][j] = round(self.current_offspring[i][j], 5)
 
         else:
+            # Mutation uniforme dans le cas où la table de mutation n'a pas été fournie
             for i in range(self.offspring_size[0]):
                 for j in range(self.offspring_size[1]):
-                    self.current_offspring[i][j] += np.random.randint(self.mutation_table[j].min, self.mutation_table[j].max)
+                    self.current_offspring[i][j] += random.uniform(-0.02, 0.02)
         
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
     
+    ''' Méthode : bestfit
+        @return Renvoie le score de fitness du meilleur 
+                individu de la dernière génération en cours
+    '''
     def bestfit(self):
         return round(self.evolution_trace[-1][1],4)
-        
+    
+    ''' Méthode : clear
+        Vide les parents et enfants actuels afin de préparer la nouvelle génération
+    '''
     def clear(self):
         self.current_offspring = []
         self.current_parents = []
 
+     ''' Méthode : launch
+        Fait fonctionner l'algorithme génération par génération
+        en faisant appel à chaque opérateur
+    '''
     def launch(self):
         for i in range(self.max_generation):
             print(f"Generation : {i} : ", end=' ')
@@ -271,6 +297,9 @@ class Genetic:
             print(self.bestfit())
             self.clear()
 
+    ''' Méthode : print
+        Renvoie le meilleur individu de la dernière génération en cours et son erreur
+    '''
     def print(self):
         # for i in range(len(self.evolution_trace)):
         #     print("Generation "+str(i+1)+" (best) : ", self.evolution_trace[i][0], " (error : ", str(round(self.evolution_trace[i][1],4))+")")
