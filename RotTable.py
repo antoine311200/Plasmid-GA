@@ -25,7 +25,6 @@ class RotTable:
 
     def __init__(self, data={}):
         self.__Rot_Table = {}
-
         if(data=={}):
             for dinucleotide in RotTable.__ORIGINAL_ROT_TABLE:
                 self.__Rot_Table[dinucleotide] = RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][:2]
@@ -34,11 +33,6 @@ class RotTable:
             for dinucleotide in data:
                 self.__Rot_Table[dinucleotide] = data[dinucleotide]
 
-
-
-    ###################
-    # WRITING METHODS #
-    ###################
 
 
     ###################

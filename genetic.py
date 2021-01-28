@@ -59,7 +59,7 @@ class Genetic:
             self.current_parents[i] = self.current_population[L_indice[i]]
         
         self.evolution_trace.append([self.current_population[L_indice[0]], fitness_list[L_indice[0]]])
-        #self.current_parents = sorted(fitness_list)[:self.number_parents]
+        
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
     
@@ -68,6 +68,8 @@ class Genetic:
             self.select_elit()
         elif (self.selection_mode == "tournoi"):
             self.select_tournoi2()
+        elif(self.selection_mode == "fulltournoi"):
+            self.select_tournoi()
 
 
     def select_tournoi2(self):
@@ -82,9 +84,11 @@ class Genetic:
             self.current_parents.append(self.current_population[sorted_idx[i]])
         loser_idx=[]
         for i in range(self.number_parents-self.number_parents//10):
+            
             if(len(indice_list)<2):
                 indice_list += loser_idx
                 loser_idx=[]
+            
             a=random.choice(indice_list)
             indice_list.remove(a)
             b=random.choice(indice_list)
@@ -101,8 +105,6 @@ class Genetic:
 
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
-
-
 
     def select_tournoi(self):
         self.proba_win = 0.01
@@ -270,5 +272,6 @@ class Genetic:
             self.clear()
 
     def print(self):
-        for i in range(len(self.evolution_trace)):
-            print("Generation "+str(i+1)+" (best) : ", self.evolution_trace[i][0], " (error : ", str(round(self.evolution_trace[i][1],4))+")")
+        # for i in range(len(self.evolution_trace)):
+        #     print("Generation "+str(i+1)+" (best) : ", self.evolution_trace[i][0], " (error : ", str(round(self.evolution_trace[i][1],4))+")")
+        print("Generation last (best) : ", self.evolution_trace[-1][0], " (error : ", str(round(self.evolution_trace[-1][1],4))+")")
