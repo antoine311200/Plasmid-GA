@@ -52,10 +52,13 @@ def select_tournoi(self):
     L_tier = []
     L_tier.append([[self.current_population[i], self.fitness(
         self.current_population[i]), i] for i in range(self.population_size[0])])
+
     # L_tier est la liste des placements, par ex L_tier[0] contient la liste des couples [individu_i,fitness(individu_i)]
     # qui on perdu des le 1er match, L_tier[1] ceux qui on perdu leur 2em match etc
-    # on fait le tournoi pour placer tout les joueurs (on s'arrête quand on a un gagnant final)
+    # on fait le tournoi pour placer tout les joueurs dans un tier (on s'arrête quand on a un gagnant final)
 
+    # .remove ne marche pas ici car les individu contiennent des arrays
+    # donc on a besoin des indices des individus dans L_tier pour les pop plus tard
     while len(L_tier[-1]) >= 2:
         L_participant = L_tier[-1]
         nbr_par = len(L_participant)
@@ -89,17 +92,19 @@ def select_tournoi(self):
                 else:
                     L_gagnant.append(J2[:2] + [i+1])
                     L_ind_to_pop.append(ind_J2)
-        if nbr_par % 2 == 1:  # quand on a un nombre impaire de participant, par défaut le dernier participant gagne et passe au tier suivant
+        if nbr_par % 2 == 1:    # quand on a un nombre impaire de participant, par défaut le dernier participant gagne et passe au tier suivant
             L_gagnant.append(L_participant[-1])
             L_ind_to_pop.append(L_participant[-1][2])
 
+        # on prend les indices a pop en ordres decroissant (pour ne pas modifier les indices a pop suivant)
         L_ind_to_pop.sort(reverse=True)
         for k in L_ind_to_pop:
             L_tier[-1].pop(k)
 
         L_tier.append(L_gagnant)
 
-    L_ajout = []        # pour faire l'ajout au current_parents, on rajoute les joueurs en commencant par le tier le plus haut
+    # pour faire l'ajout au current_parents, on rajoute les joueurs en commencant par le tier le plus haut
+    L_ajout = []
     for i in range(self.number_parents):
         if len(L_ajout) == 0:
             L_ajout = L_tier.pop()
