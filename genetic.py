@@ -282,7 +282,7 @@ class Genetic:
         self.current_offspring = []
         self.current_parents = []
 
-     ''' Méthode : launch
+    ''' Méthode : launch
         Fait fonctionner l'algorithme génération par génération
         en faisant appel à chaque opérateur
     '''
