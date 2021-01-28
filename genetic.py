@@ -68,32 +68,27 @@ class Genetic:
         nb_chrmsm = self.offspring_size[1]//d # nb_chrmsm : nombre de gènes transmis par chaque parent à l'enfant
         for i in range(1, d-1):
             child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
-        # pour ne pas avoir d'erreur, on complète avec le bon nombre de gènes (provenant du dernier parent)
+        # on complète avec le bon nombre de gènes, provenant du dernier parent
         child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
-        print(len(child),self.offspring_size[1], child)
         return child
 
 
 
-    def crossover(self):
+    def crossover(self): # crée la prochaine génération
 
         nb_voulu = self.offspring_size[0]
         Parents = self.current_parents
 
         while len(self.current_offspring) < nb_voulu :
-            # On va créer en boucle sum(self.sx_weights) enfants, jusqu'à en avoir le nombre voulu.
-            # L'intérêt est qu'à chaque itération, le nombre d'enfants créés pour chaque méthode 
-            # de reproduction (une méthode est caractérisée par un nombre de parents) est donné
-            # par le poids de la méthode, indiqué dans le tableau self.sx_weights.
 
-            for d in range(2, len(self.sx_weights)+2): # d = nbr of parents pour créer un enfant
-                poids = self.sx_weights[d-2] # poids = nombre de fois où on va appliquer la méthode
+            for d in range(2, len(self.sx_weights)+2): # d = nbr de parents pour créer un seul enfant
+                poids = self.sx_weights[d-2] # poids = nombre de fois où l'on va 
 
-                for _ in range(poids):
+                for _ in range(poids): # 
                     if len(self.current_offspring) >= nb_voulu :
                         return
                     rd_parents = [choice(Parents) for _ in range(d)] # choix de d parents aléatoires
-                    child = self.repro(rd_parents, d) 
+                    child = self.repro(rd_parents, d) # création de l'enfant
                     self.current_offspring.append(child)
 
      
