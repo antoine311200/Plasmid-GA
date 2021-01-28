@@ -19,14 +19,14 @@ def dataForMutation(rot_tab, mutation_variance):
 
 if __name__ == "__main__":
 
-    plasmid = Plasmid("awesome plasmid", number_repli=30)
+    plasmid = Plasmid("awesome plasmid", number_repli=50)
     plasmid.load("./resources/plasmid_8k.fasta")
 
     # Genetic algorithm parameters
 
     number_population = 50
     number_parents = 20
-    number_generations = 10
+    number_generations = 500
     mutation_variance = 2000
 
     mutation_table = dataForMutation(RotTable(), mutation_variance)
