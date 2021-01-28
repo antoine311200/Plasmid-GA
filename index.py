@@ -10,7 +10,6 @@ from genetic import *
 def fitness_indiv(indiv, data):
     return Plasmid("", Plasmid.decodage(indiv), data[0], data[1], data[2]).getDistance()
 
-
 def dataForMutation(rot_tab, mutation_variance):
     mut_table = []
     for dinucleotide in Plasmid.important_dinucleotides :
@@ -27,7 +26,7 @@ if __name__ == "__main__":
 
     number_population = 50
     number_parents = 20
-    number_generations = 1000
+    number_generations = 10
     mutation_variance = 2000
 
     mutation_table = dataForMutation(RotTable(), mutation_variance)
@@ -46,7 +45,7 @@ if __name__ == "__main__":
 
 
     data = {
-        "selection_mode" : "tournoi",
+        "selection_mode" : "elitist",
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
         "fitness_data" : [Traj3D(), plasmid.sequence, plasmid.number_repli],

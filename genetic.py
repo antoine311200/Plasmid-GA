@@ -247,7 +247,7 @@ class Genetic:
                 for _ in range(poids):
                     if len(self.current_offspring) >= self.offspring_size[0] :
                         return
-                    rd_parents = random.sample(self.current_parents, d)# choix de d parents aléatoires
+                    rd_parents = [random.choice(self.current_parents) for _ in range(d)]# choix de d parents aléatoires
                     child = self.repro(rd_parents, d) # création de l'enfant
                     self.current_offspring.append(child)
 
