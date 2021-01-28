@@ -6,35 +6,47 @@ import random
 from plasmid import *
 from genetic import *
 
-
-def fitness_indiv(indiv, data):
-    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1], data[2]).getDistance()
-
-def dataForMutation(rot_tab, mutation_variance):
-    mut_table = []
-    for dinucleotide in Plasmid.important_dinucleotides :
-        mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_variance],\
-                       ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_variance]]
-    return mut_table
-
 if __name__ == "__main__":
 
-    plasmid = Plasmid("awesome plasmid", number_repli=30)
-    plasmid.load("./resources/plasmid_8k.fasta")
 
     # Genetic algorithm parameters
 
     number_population = 50
     number_parents = 20
-    number_generations = 10
-    mutation_variance = 2000
+    number_generations = 5
 
-    mutation_table = dataForMutation(RotTable(), mutation_variance)
-    sample_size = len(mutation_table)
-    average_sample = [35.62, 7.2, 34.4, 1.1, 27.7, 8.4, 31.5, 2.6, 34.5, 3.5,33.67, 2.1,29.8, 6.7,36.9, 5.3,40, 5,36, 0.9]
+    # Plus le nombre est grand, plus les mutations sont proches de l'original
+    # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
+    mutation_dispersion = 2000
 
+    #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
+    number_repliment = 100
+
+    #paramete intra Genetic :
+    #Choisir entre "elitist", "tournoi" et "fulltournoi"
+    selection_mode = "tournoi"
+
+    #Seul normal est disponible
+    crossover_mode = "normal"  
+
+    #Correspond au nombre d'enfant par méthode de crossover (par nombre de parent)
+    crossover_data = [1,1,1,1] 
+    # [1] -> seulement 2 parents
+    # [1,1,1] -> 2, 3 et 4 parents équirepartis
+    # [3,0,1] -> 25% 4 parents 75% 2 parents
+
+    
+    plasmid = Plasmid("plasmid", number_repli=number_repliment)
+    plasmid.load("./resources/plasmid_8k.fasta")
+
+    mutation_table = data_for_mutation(RotTable(), mutation_dispersion)
+    average_sample = plasmid.encodage()
+    sample_size = len(average_sample)
+
+
+
+    #Creation de la population initial
     initial_population = []
-
     for i in range(number_population):
         sample = []
         for j in range(sample_size):
@@ -42,17 +54,16 @@ if __name__ == "__main__":
             sample.append(round(average_sample[j]+rand,5))
         initial_population.append(sample)
 
-
-
     data = {
-        "selection_mode" : "elitist",
-        "crossover_mode" : "normal",
+        "selection_mode" : selection_mode, 
+        "crossover_mode" : crossover_mode,
         "mutation_table" : mutation_table,
         "fitness_data" : [Traj3D(), plasmid.sequence, plasmid.number_repli],
-        "crossover_data" : [1, 1, 1, 1, 1]
-    }
+        "crossover_data" : crossover_data
+        }
+    
 
-    genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_indiv, data=data)
+    genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_for_plasmid, data=data)
     genetic_algorithm.launch()
     genetic_algorithm.print()
 

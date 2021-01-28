@@ -1,5 +1,4 @@
 import math
-
 from RotTable import *
 from Traj3D import *
 
@@ -103,3 +102,14 @@ class Plasmid:
             var = point1-point2
             dist += math.sqrt(var.dot(var)) # correspond à la norme de var
         return dist/self.number_repli
+
+
+def fitness_for_plasmid(indiv, data):
+    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1], data[2]).getDistance()
+
+def data_for_mutation(rot_tab, mutation_dispersion):
+    mut_table = []
+    for dinucleotide in Plasmid.important_dinucleotides :
+        mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
+                       ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
+    return mut_table
