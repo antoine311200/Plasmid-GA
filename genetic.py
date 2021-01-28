@@ -144,7 +144,7 @@ class Genetic:
                 loser_idx.append(b)
 
         #Sauvegarde l'historique de l'algorithme génétique
-        self.evolution_trace.append([self.current_population[sorted_idx[0]], fitness_list[sorted_idx[0]]])
+        self.evolution_trace.append([self.current_population[sorted_idx[0]], fitness_list[sorted_idx[0]], sum(fitness_list)/self.population_size[0]])
         if self.history_parents_enable:
             self.parents_history.append(self.current_parents)
 
@@ -331,6 +331,11 @@ class Genetic:
     def bestfit(self):
         return round(self.evolution_trace[-1][1],4)
     
+    """ Méthode : meanfit
+        @return Renvoie la valeur du fitness moyen de la génération
+    """
+    def meanfit(self):
+        return round(self.evolution_trace[-1][2], 2)
     ''' Méthode : clear
         Vide les parents et enfants actuels afin de préparer la nouvelle génération
     '''
@@ -350,7 +355,7 @@ class Genetic:
             self.crossover()
             self.mutate()
             #print(self.current_population)
-            print(self.bestfit())
+            print(self.bestfit(), "   ", self.meanfit())
             self.clear()
 
     ''' Méthode : print

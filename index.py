@@ -8,26 +8,16 @@ from genetic import *
 
 if __name__ == "__main__":
 
-<<<<<<< HEAD
-=======
-    plasmid = Plasmid("awesome plasmid", number_repli=50)
-    plasmid.load("./resources/plasmid_8k.fasta")
->>>>>>> 995843004eb8a7b9f74dc1f6aac97cdd161fcb64
 
     # Genetic algorithm parameters
 
     number_population = 50
     number_parents = 20
-<<<<<<< HEAD
-    number_generations = 5
-=======
-    number_generations = 500
-    mutation_variance = 2000
->>>>>>> 995843004eb8a7b9f74dc1f6aac97cdd161fcb64
+    number_generations = 300
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
-    mutation_dispersion = 2000
+    mutation_dispersion = 500
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
     number_repliment = 100
@@ -40,7 +30,7 @@ if __name__ == "__main__":
     crossover_mode = "normal"  
 
     #Correspond au nombre d'enfant par méthode de crossover (par nombre de parent)
-    crossover_data = [1,1,1,1] 
+    crossover_data = [0,0,0,1] 
     # [1] -> seulement 2 parents
     # [1,1,1] -> 2, 3 et 4 parents équirepartis
     # [3,0,1] -> 25% 4 parents 75% 2 parents

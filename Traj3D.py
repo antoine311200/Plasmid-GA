@@ -62,10 +62,24 @@ class Traj3D:
     def draw(self, trueIdxLast):
         xyz = np.array(self.__Traj3D)
         self.__Traj3D = []
-        x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
+        x, y, z = xyz[:-trueIdxLast,0], xyz[:-trueIdxLast,1], xyz[:-trueIdxLast,2]
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.plot(x,y,z)
-        ax.scatter([xyz[0][0],xyz[-trueIdxLast-1][0]],[xyz[0][1],xyz[-trueIdxLast-1][1]],[xyz[0][2],xyz[-trueIdxLast-1][2]], color='green')
-        ax.scatter([xyz[0][0],xyz[-1][0]],[xyz[0][1],xyz[-1][1]],[xyz[0][2],xyz[-1][2]], color='red')
+        x, y, z = xyz[-trueIdxLast:,0], xyz[-trueIdxLast:,1], xyz[-trueIdxLast:,2]
+        ax.plot(x,y,z, color='r')
+
+        
+        ax.text(xyz[0][0],xyz[0][1],xyz[0][2], 'origin')
+        ax.text(xyz[-1-trueIdxLast][0],xyz[-1-trueIdxLast][1],xyz[-1-trueIdxLast][2], 'end')
+
+        ax.scatter([xyz[-trueIdxLast-1][0]],[xyz[-trueIdxLast-1][1]],[xyz[-trueIdxLast-1][2]], color='red')
+        ax.scatter([xyz[0][0]],[xyz[0][1]],[xyz[0][2]], color='blue')
+
+        ax.scatter([xyz[trueIdxLast-1][0]], [xyz[trueIdxLast-1][1]], [xyz[trueIdxLast-1][2]], color='green')
+        ax.text(xyz[trueIdxLast-1][0],xyz[trueIdxLast-1][1],xyz[trueIdxLast-1][2], 'tip')
+
+        ax.scatter([xyz[-1][0]], [xyz[-1][1]], [xyz[-1][2]], color='green')
+        ax.text(xyz[-1][0],xyz[-1][1],xyz[-1][2], 'tip')
+
         plt.show()
