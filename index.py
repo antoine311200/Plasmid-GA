@@ -8,12 +8,22 @@ from genetic import *
 
 if __name__ == "__main__":
 
+<<<<<<< HEAD
+=======
+    plasmid = Plasmid("awesome plasmid", number_repli=50)
+    plasmid.load("./resources/plasmid_8k.fasta")
+>>>>>>> 995843004eb8a7b9f74dc1f6aac97cdd161fcb64
 
     # Genetic algorithm parameters
 
     number_population = 50
     number_parents = 20
+<<<<<<< HEAD
     number_generations = 5
+=======
+    number_generations = 500
+    mutation_variance = 2000
+>>>>>>> 995843004eb8a7b9f74dc1f6aac97cdd161fcb64
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
