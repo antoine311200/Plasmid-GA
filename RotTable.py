@@ -22,7 +22,10 @@ class RotTable:
         "TG": [34.5, 3.5, 64, 0.9, 34, 0],\
         "TT": [35.62, 7.2, 154, 0.06, 0.6, 0]\
         }
-
+    """
+    la data est un dictionnaire qui contient le Twist et le Wedge de tout les dinucleotide
+    ainsi selon les cas , on prends les données de ORIGINAL_ROT_TABLE ou de data
+    """
     def __init__(self, data={}):
         self.__Rot_Table = {}
         if(data=={}):
@@ -38,10 +41,10 @@ class RotTable:
     ###################
     # READING METHODS #
     ###################
-    def getTwistVariance(self, dinucleotide):
+    def getTwistVariance(self, dinucleotide): #independent
         return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][3]
     
-    def getWedgeVariance(self, dinucleotide):
+    def getWedgeVariance(self, dinucleotide): #independent
         return RotTable.__ORIGINAL_ROT_TABLE[dinucleotide][4]
 
     def getTwist(self, dinucleotide): #depend on the individual
