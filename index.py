@@ -20,7 +20,7 @@ def dataForMutation(rot_tab, mutation_variance):
 
 if __name__ == "__main__":
 
-    plasmid = Plasmid("awesome plasmid", number_repli=1)
+    plasmid = Plasmid("awesome plasmid", number_repli=2)
     plasmid.load("./resources/plasmid_8k.fasta")
 
     # Genetic algorithm parameters
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         "selection_mode" : "tournoi",
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
-        "fitness_data" : [Traj3D(), plasmid.sequence, 1],
+        "fitness_data" : [Traj3D(), plasmid.sequence, 5],
         "crossover_data" : [1, 1, 1, 1, 1]
     }
 
@@ -59,13 +59,13 @@ if __name__ == "__main__":
     plasmid.setFolding(15)
 
     average_sample2 = genetic_algorithm.evolution_trace[-1][0]
-    initial_population2 = []
+    initial_population2 = [average_sample2]
 
-    for i in range(number_population):
+    for i in range(number_population-1):
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample2[j]+rand/25,5))
+            sample.append(round(average_sample2[j]+rand/250,5))
         initial_population2.append(sample)
 
     data = {
