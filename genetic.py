@@ -82,7 +82,7 @@ class Genetic:
         if(self.selection_mode == "elitist"):
             self.select_elit()
         elif (self.selection_mode == "tournoi"):
-            self.select_tournoi2()
+            self.select_tournoi_simple()
         elif(self.selection_mode == "fulltournoi"):
             self.select_tournoi()
     
