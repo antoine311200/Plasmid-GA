@@ -74,7 +74,3 @@ class Plasmid:
             var = point1-point2
             dist += math.sqrt(var.dot(var))
         return dist
-        # last = self.trajectory.getIndexFromTraj(-1)
-        # second = self.trajectory.getIndexFromTraj(1)
-        # prelast = self.trajectory.getIndexFromTraj(-2)
-        # return math.sqrt(prelast.dot(prelast)) + math.sqrt((second-last).dot(second-last))

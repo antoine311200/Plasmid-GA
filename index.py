@@ -68,6 +68,8 @@ if __name__ == "__main__":
 
     initial_population2 = []
     average_sample2 = genetic_algorithm.evolution_trace[-1][0]
+    mutation_variance = 5000
+    mutation_table = dataForMutation(RotTable(), mutation_variance)
 
     for i in range(number_population):
         sample = []

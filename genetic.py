@@ -37,13 +37,13 @@ class Genetic:
         self.current_offspring = []
         self.evolution_trace = []
 
-
+    
     def fitness(self, individual):
         if(self.has_fitness_data):
             return self.fitness_function(individual, self.fitness_data)
         else :
             return self.fitness_function(individual)
-    
+ 
     # elitist selection 
     # roulette selection : p_i = f_i / sum f_j (sur-representativity !!!)
     # rang selection : sort -> index = proportion (smoothing) (convergence time !!!)
@@ -65,7 +65,7 @@ class Genetic:
             self.parents_history.append(self.current_parents)
 
     def repro(self, Parents, d): # d = nombre de parents
-        child = Parents[0].copy() 
+        child = Parents[0].copy()
         nb_chrmsm = self.offspring_size[1]//d # nb_chrmsm : nombre de gènes transmis par chaque parent à l'enfant
         for i in range(1, d-1):
             child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
