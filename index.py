@@ -8,7 +8,7 @@ from genetic import *
 
 
 def fitness_indiv(indiv, data):
-    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1]).getDistance()
+    return Plasmid("", Plasmid.decodage(indiv), data[0], data[1], data[2]).getDistance()
 
 
 def dataForMutation(rot_tab, mutation_variance):
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         "selection_mode" : "tournoi",
         "crossover_mode" : "normal",
         "mutation_table" : mutation_table,
-        "fitness_data" : [Traj3D(), plasmid.sequence],
+        "fitness_data" : [Traj3D(), plasmid.sequence, plasmid.number_repli],
         "crossover_data" : [1, 1, 1, 1, 1]
     }
 
