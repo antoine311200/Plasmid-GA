@@ -11,26 +11,26 @@ if __name__ == "__main__":
 
     # Genetic algorithm parameters
 
-    number_population = 40
+    number_population = 60
     number_parents = 20
-    number_generations = 300
+    number_generations = 150
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
-    mutation_dispersion = 500
+    mutation_dispersion = 1500
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
-    number_repliment = 100
+    number_repliment = 60
 
     #paramete intra Genetic :
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
-    selection_mode = "fulltournoi"
+    selection_mode = "tournoi"
 
     #Seul normal est disponible
-    crossover_mode = "normal"  
+    crossover_mode = "normal"
 
     #Correspond au nombre d'enfant par méthode de crossover (par nombre de parent)
-    crossover_data = [1,0,0,1] 
+    crossover_data = [1,0,0,1]
     # [1] -> seulement 2 parents
     # [1,1,1] -> 2, 3 et 4 parents équirepartis
     # [3,0,1] -> 25% 4 parents 75% 2 parents
@@ -66,7 +66,10 @@ if __name__ == "__main__":
     genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_for_plasmid, data=data)
     genetic_algorithm.launch()
     genetic_algorithm.print()
+    genetic_algorithm.log('ga_save')
 
     plasmid.setRotationTable(Plasmid.decodage(genetic_algorithm.evolution_trace[-1][0]))
     plasmid.compute()
     plasmid.draw()
+
+    Genetic.plot_all()

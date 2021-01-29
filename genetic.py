@@ -1,7 +1,10 @@
 import numpy as np
 import math as math
 
+import matplotlib.pyplot as plt
+
 import random
+import os
 
 """ Class Genetic :
     Classe qui permet d'effectuer un algorithme génétique sur une population d'individu (liste de leur gène)
@@ -23,9 +26,12 @@ class Genetic:
             launch permet de lancer le calcul avec max_generation générations
             print donne le dernier meilleurs individus de la derniere génération
     """
-    def __init__(self, number_parents, max_generation, population, fitness_function, data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1]}):
+    def __init__(self, number_parents, max_generation, population, fitness_function, data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1,1,1,1]}):
         
-        self.data = data
+        self.data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1,1,1,1]}
+        for (k,v) in data.items():
+            self.data[k] = v
+        
         self.number_parents = number_parents
         self.max_generation = max_generation
         self.initial_population = population
@@ -37,16 +43,15 @@ class Genetic:
                    "type de mutation" accepte beaucoup de valeur : gauss, uniform, gauss bounded, randint, triangular
                    param1, param2 correspond au paramètre de chaque fonction particuliere
             "fitness_data" : un liste de donnée qui sera mise en paramètre de la fitness_function, None si il n'y en a pas besoin
-
         """
-        self.mutation_table = data['mutation_table']
-        self.fitness_data = data['fitness_data']
-        self.has_fitness_data = (data['fitness_data'] != None)
-        self.selection_mode = data['selection_mode']
-        self.crossover_mode = data['crossover_mode']
+        self.mutation_table = self.data['mutation_table']
+        self.fitness_data = self.data['fitness_data']
+        self.has_fitness_data = (self.data['fitness_data'] != None)
+        self.selection_mode = self.data['selection_mode']
+        self.crossover_mode = self.data['crossover_mode']
         self.fitness_function = fitness_function
 
-        self.sx_weights= data["crossover_data"]
+        self.sx_weights= self.data["crossover_data"]
 
 
         self.current_generation = 0
@@ -63,6 +68,7 @@ class Genetic:
         self.current_population = self.initial_population
         self.current_offspring = []
         self.evolution_trace = []
+
 
     """ Méthode : fitness
         selon qu'il y ai besoin de la fitness_data, appelle la fonction donnée en argument avec les bon paramètre
@@ -281,19 +287,40 @@ class Genetic:
                     # Distribution uniforme
                     elif random_method == 'uniform':
                         a,b = self.mutation_table[j][1], self.mutation_table[j][2]
-                        origin = self.mutation_table[j][3]
+                        # origin = self.mutation_table[j][3]
                         mute_rate = random.uniform(a, b)
 
-                        if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
-                            self.current_offspring[i][j] += mute_rate
+                        # if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
+                        self.current_offspring[i][j] += mute_rate
+                    
+                    # Distribution uniforme bornée
+                    elif random_method == 'uniform bounded':
+
+                        vmin,vmax=self.mutation_table[j][1], self.mutation_table[j][2]
+                        a,b = self.mutation_table[j][3], self.mutation_table[j][4]
+
+                        # l = 0
+                        while True:
+                            # l+=1
+                            # if l>=10:
+                            #     print(self.current_offspring[i][j], a, b)
+                            mute_rate = random.uniform(vmin, vmax)
+                            if self.current_offspring[i][j]+mute_rate >= a and self.current_offspring[i][j]+mute_rate <= b:
+                                self.current_offspring[i][j] += mute_rate
+                                break
                     
                     # Distribution gaussienne restreinte à un intervalle
                     elif random_method == 'gauss bounded':
 
-                        origin = self.mutation_table[j][2]
                         sigma = self.mutation_table[j][1]
+                        origin = self.mutation_table[j][2]
                         variance = self.mutation_table[j][3]
+
+                        l = 0
                         while True:
+                            l+=1
+                            if l>=10:
+                                print(self.current_offspring[i][j], origin-sigma, origin+sigma)
                             mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -323,6 +350,52 @@ class Genetic:
                     self.current_offspring[i][j] += random.uniform(-0.02, 0.02)
         
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
+
+
+    def log(self, folder, name=""):
+        self.folder = folder
+        self.name = name
+
+        string_parameters = [
+            str(self.number_parents),
+            str(self.max_generation),
+            str(self.population_size[0]),
+            str(self.population_size[1]),
+            self.selection_mode,
+            self.crossover_mode
+        ]
+
+        line_data = ' '.join(string_parameters)
+        line_error = ' '.join(list(map(str, np.array(self.evolution_trace, dtype=object)[::,1])))
+
+        # print(line_data)
+        # print(line_error)
+
+        file = open(self.folder+'/ga_'+self.name+str(random.randint(0,100000)), 'w')
+        file.write(line_data)
+        file.write('\n')
+        file.write(line_error)
+        file.close()
+
+    def plot(self):
+        plt.plot(np.linspace(1, self.max_generation, self.max_generation), np.array(self.evolution_trace, dtype=object)[::,1])
+        
+        plt.xlabel('Generations')
+        plt.ylabel('Minimum error')
+
+        plt.show()
+
+    @staticmethod
+    def plot_all():
+        pathname = os.getcwd()+'/ga_save'
+        for filename in os.listdir(pathname):
+            with open(os.path.join(pathname, filename), 'r') as file:
+                number_generation = int(file.readline().split(' ')[1])
+                line = file.readline()
+                # print(number_generation, line, list(map(float,line.split(' '))))
+                plt.plot(np.linspace(1, number_generation, number_generation), list(map(float,line.split(' '))))
+                file.close()
+        plt.show()
     
     ''' Méthode : bestfit
         @return Renvoie le score de fitness du meilleur 

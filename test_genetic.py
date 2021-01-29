@@ -1,6 +1,6 @@
 from genetic import *
 from plasmid import *
-from index import dataForMutation
+
 def fitness_function_sample(indiv):
     return -sum(indiv)
 
@@ -30,7 +30,7 @@ def test_decodage():
     assert rot_t.getWedge("GA") == 5.3
 
 def test_dataForMutation():
-    mut_tab = dataForMutation(RotTable(), 1)
+    mut_tab = data_for_mutation(RotTable(), 1)
     assert len(mut_tab) == 20
     assert  len(mut_tab[0])== 4
     assert mut_tab[0][0]=="gauss bounded"
