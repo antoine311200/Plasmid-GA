@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     number_population = 80
     number_parents = 20
-    number_generations = 100
+    number_generations = 1
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     best = [35.69138, 6.41456, 32.73365, -4.81166, 29.7054, 9.5206,  29.95633, 2.43291, 34.32917, 70.16257, 33.76503, -1.90312, 29.85794, 8.87855, 37.24665, -0.17051, 41.61833,  5.9078,  34.71625, -0.70015]
     #Creation de la population initial
     initial_population = []
-    for i in range(number_population-1):
+    for i in range(number_population):
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])

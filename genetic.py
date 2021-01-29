@@ -291,11 +291,11 @@ class Genetic:
                     # Distribution uniforme
                     elif random_method == 'uniform':
                         a,b = self.mutation_table[j][1], self.mutation_table[j][2]
-                        origin = self.mutation_table[j][3]
+                        # origin = self.mutation_table[j][3]
                         mute_rate = random.uniform(a, b)
 
-                        if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
-                            self.current_offspring[i][j] += mute_rate
+                        # if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
+                        self.current_offspring[i][j] += mute_rate
                     
                     # Distribution uniforme bornée
                     elif random_method == 'uniform bounded':
@@ -304,22 +304,36 @@ class Genetic:
                         a,b = self.mutation_table[j][3], self.mutation_table[j][4]
 
                         # l = 0
+                        if self.current_offspring[i][j] >= a and self.current_offspring[i][j] <= b:
+                            raise Exception("individual "+str(i)+" is out of segment")
+                    
+                        fail_index = 0
                         while True:
-                            # l+=1
-                            # if l>=10:
-                            #     print(self.current_offspring[i][j], a, b)
+                            fail_index+=1
+                            if fail_index>=25:
+                                raise Exception("individual "+str(i)+" is out of segment")
+
                             mute_rate = random.uniform(vmin, vmax)
                             if self.current_offspring[i][j]+mute_rate >= a and self.current_offspring[i][j]+mute_rate <= b:
                                 self.current_offspring[i][j] += mute_rate
                                 break
-                                        
+                    
                     # Distribution gaussienne restreinte à un intervalle
                     elif random_method == 'gauss bounded':
 
-                        origin = self.mutation_table[j][2]
                         sigma = self.mutation_table[j][1]
+                        origin = self.mutation_table[j][2]
                         variance = self.mutation_table[j][3]
+
+                        if self.current_offspring[i][j] >= origin-sigma and self.current_offspring[i][j] <= origin+sigma:
+                            raise Exception("individual "+str(i)+" is out of segment")
+                        
+                        fail_index = 0
                         while True:
+                            fail_index+=1
+                            if fail_index>=25:
+                                raise Exception("individual "+str(i)+" is out of segment")
+
                             mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate

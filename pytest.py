@@ -31,7 +31,7 @@ def test_decodage():
     assert rot_t.getTwist("TG") == 34.5
     assert rot_t.getWedge("GA") == 5.3
 
-def test_dataForMutation():
+def test_data_for_mutation():
     mut_tab = data_for_mutation(RotTable(), 1)
     assert len(mut_tab) == 20
     assert  len(mut_tab[0])== 4
@@ -46,6 +46,6 @@ def test_encodage():
 
 if __name__ =="__main__":
     test_encodage()
-    test_dataForMutation()
+    test_data_for_mutation()
     test_decodage()
     test_genetic()
