@@ -11,8 +11,8 @@ if __name__ == "__main__":
 
     # Genetic algorithm parameters
 
-    number_population = 80
-    number_parents = 20
+    number_population = 10
+    number_parents = 1
     number_generations = 1
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
