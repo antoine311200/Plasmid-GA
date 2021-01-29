@@ -11,8 +11,8 @@ if __name__ == "__main__":
 
     # Genetic algorithm parameters
 
-    number_population = 100
-    number_parents = 40
+    number_population = 80
+    number_parents = 20
     number_generations = 100
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     mutation_dispersion = 1000
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
-    number_repliment = 100
+    number_repliement = 100
 
     #paramete intra Genetic :
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
@@ -36,22 +36,21 @@ if __name__ == "__main__":
     # [3,0,1] -> 25% 4 parents 75% 2 parents
 
     
-    plasmid = Plasmid("plasmid", number_repli=number_repliment)
+    plasmid = Plasmid("plasmid", number_repli=number_repliement)
     plasmid.load("./resources/plasmid_8k.fasta")
 
     mutation_table = data_for_mutation(RotTable(), mutation_dispersion)
     average_sample = plasmid.encodage()
     sample_size = len(average_sample)
 
-
     best = [35.69138, 6.41456, 32.73365, -4.81166, 29.7054, 9.5206,  29.95633, 2.43291, 34.32917, 70.16257, 33.76503, -1.90312, 29.85794, 8.87855, 37.24665, -0.17051, 41.61833,  5.9078,  34.71625, -0.70015]
     #Creation de la population initial
-    initial_population = [best]
+    initial_population = []
     for i in range(number_population-1):
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample[j]+rand,5))
+            sample.append(round(average_sample[j]+rand/1000,5))
         initial_population.append(sample)
 
     data = {
@@ -66,7 +65,7 @@ if __name__ == "__main__":
     genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_for_plasmid, data=data)
     genetic_algorithm.launch()
     genetic_algorithm.print()
-
+    
     plasmid.setRotationTable(Plasmid.decodage(genetic_algorithm.evolution_trace[-1][0]))
     plasmid.compute()
     plasmid.draw()

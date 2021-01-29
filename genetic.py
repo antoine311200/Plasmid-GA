@@ -161,7 +161,7 @@ class Genetic:
         for i in range(self.population_size[0]):
             fitness_list.append(self.fitness(self.current_population[i]))
         L_indice = np.argsort(fitness_list)
-        print(L_indice[0])
+
         for i in range(self.number_parents//10):
             self.current_parents[i] = self.current_population[L_indice[0]]
             
