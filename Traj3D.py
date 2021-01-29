@@ -69,7 +69,10 @@ class Traj3D:
         x, y, z = xyz[-trueIdxLast:,0], xyz[-trueIdxLast:,1], xyz[-trueIdxLast:,2]
         ax.plot(x,y,z, color='r')
 
+        for i in range(0, trueIdxLast, trueIdxLast//9):
+            ax.plot([xyz[i][0], xyz[-trueIdxLast +i][0]], [xyz[i][1], xyz[-trueIdxLast +i][1]],[xyz[i][2], xyz[-trueIdxLast +i][2]], color ='g')
         
+        ax.plot([xyz[0][0], xyz[-trueIdxLast-1][0]], [xyz[0][1], xyz[-trueIdxLast -1][1]],[xyz[0][2], xyz[-trueIdxLast -1][2]], color ='k')
         ax.text(xyz[0][0],xyz[0][1],xyz[0][2], 'origin')
         ax.text(xyz[-1-trueIdxLast][0],xyz[-1-trueIdxLast][1],xyz[-1-trueIdxLast][2], 'end')
 

@@ -13,13 +13,3 @@ def fitness_indiv(indiv, traj3D, dna_seq):
     return(lastVect.dot(lastVect))
 
 
-"""
-data est un dictionnaire qui contient toute les informations importantes pour le choix des méthodes de Genetic
-"selection_mode" : mode de selection des individu : elitist, tournoi ou fulltournoi sont acceptés
-"crossover_mode" : méthode du crossover, actuellement seul : "normal" est accepté
-"mutation_table" : Continent None, ou une liste de liste, chaque élement représente un gène ["type de mutation", param1, param2, ...]
-                   "type de mutation" accepte beaucoup de valeur : gauss, uniform, gauss bounded, randint, triangular
-                   param1, param2 correspond au paramètre de chaque fonction particuliere
-"fitness_data" : un liste de donnée qui sera mise en paramètre de la fitness_function, None si il n'y en a pas besoin
-
-"""

@@ -161,10 +161,14 @@ class Genetic:
         for i in range(self.population_size[0]):
             fitness_list.append(self.fitness(self.current_population[i]))
         L_indice = np.argsort(fitness_list)
+        print(L_indice[0])
+        for i in range(self.number_parents//10):
+            self.current_parents[i] = self.current_population[L_indice[0]]
+            
         
         L_tier = []
         L_tier.append([[self.current_population[i], fitness_list[i], i]
-                     for i in range(self.population_size[0])])
+                     for i in L_indice[self.number_parents//10:]])
         
         # L_tier est la liste des placements, par ex L_tier[0] contient la liste des couples [individu_i,fitness(individu_i)]
         # qui on perdu des le 1er match, L_tier[1] ceux qui on perdu leur 2em match etc
@@ -216,7 +220,7 @@ class Genetic:
             L_tier.append(L_gagnant)
         # pour faire l'ajout au current_parents, on rajoute les joueurs en commencant par le tier le plus haut
         L_ajout = []
-        for i in range(self.number_parents):
+        for i in range(self.number_parents//10, self.number_parents):
             if len(L_ajout) == 0:
                 L_ajout = L_tier.pop()
             self.current_parents[i] = L_ajout.pop()[0]
@@ -357,6 +361,7 @@ class Genetic:
     """
     def meanfit(self):
         return round(self.evolution_trace[-1][2], 2)
+
     ''' Méthode : clear
         Vide les parents et enfants actuels afin de préparer la nouvelle génération
     '''
@@ -372,10 +377,11 @@ class Genetic:
         for i in range(self.max_generation):
             print(f"Generation : {i} : ", end=' ')
             self.current_generation += 1
+
             self.select()
             self.crossover()
             self.mutate()
-            #print(self.current_population)
+
             print(self.bestfit(), "   ", self.meanfit())
             self.clear()
 

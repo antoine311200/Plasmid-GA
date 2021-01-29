@@ -100,7 +100,7 @@ class Plasmid:
             point1 = self.trajectory.getIndexFromTraj(i)
             point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
             var = point1-point2
-            dist += math.sqrt(var.dot(var)) # correspond à la norme de var
+            dist += math.sqrt(var.dot(var))/(i+2)**(1/2) # correspond à la norme de var
         return dist/self.number_repli
 
 
@@ -110,6 +110,6 @@ def fitness_for_plasmid(indiv, data):
 def data_for_mutation(rot_tab, mutation_dispersion):
     mut_table = []
     for dinucleotide in Plasmid.important_dinucleotides :
-        mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
-                       ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
+        mut_table += [["gauss bounded", 2*rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
+                       ["gauss bounded", 2*rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
     return mut_table
