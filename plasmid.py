@@ -100,7 +100,7 @@ class Plasmid:
             point1 = self.trajectory.getIndexFromTraj(i)
             point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
             var = point1-point2
-            dist += math.sqrt(var.dot(var))#/(i+1)**(1/2) # correspond à la norme de var
+            dist += math.sqrt(var.dot(var))/(i+1) # correspond à la norme de var
         return dist/self.number_repli
 
 

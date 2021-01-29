@@ -50,7 +50,7 @@ if __name__ == "__main__":
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample[j]+rand/1000,5))
+            sample.append(round(average_sample[j]+rand,5))
         initial_population.append(sample)
 
     data = {
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     genetic_algorithm = Genetic(number_parents, number_generations, initial_population, fitness_for_plasmid, data=data)
     genetic_algorithm.launch()
     genetic_algorithm.print()
-    
+
     plasmid.setRotationTable(Plasmid.decodage(genetic_algorithm.evolution_trace[-1][0]))
     plasmid.compute()
     plasmid.draw()

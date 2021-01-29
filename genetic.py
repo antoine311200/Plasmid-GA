@@ -349,6 +349,63 @@ class Genetic:
         
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
     
+    ''' Method : log
+        Cette méthode permet d'enregistrer les paramètres du modèle ainsi 
+        que les erreurs aux différentes générations dans un fichier
+        @param folder - le path du dossier où sera stocké le fichier de donnée
+        @param name - un nom pour reconnaître son modèle 
+        @return - None, mais le fichier est créé au nom 'ga_[name]_[random int]'
+    '''
+    def log(self, folder, name=""):
+        self.folder = folder
+        self.name = name
+
+        string_parameters = [
+            str(self.number_parents),
+            str(self.max_generation),
+            str(self.population_size[0]),
+            str(self.population_size[1]),
+            self.selection_mode,
+            self.crossover_mode
+        ]
+
+        line_data = ' '.join(string_parameters)
+        line_error = ' '.join(list(map(str, np.array(self.evolution_trace, dtype=object)[::,1])))
+
+        file = open(self.folder+'/ga_'+self.name+str(random.randint(0,100000)), 'w')
+        file.write(line_data)
+        file.write('\n')
+        file.write(line_error)
+        file.close()
+
+    ''' Method : plot
+        Affiche l'évolution de l'erreur du meilleur individu à chaque génération
+    '''
+    def plot(self):
+        plt.plot(np.linspace(1, self.max_generation, self.max_generation), np.array(self.evolution_trace, dtype=object)[::,1])
+        
+        plt.xlabel('Generations')
+        plt.ylabel('Minimum error')
+
+        plt.show()
+
+    ''' Static method : plot_all
+        Méthode statique qui permet de charger tous les fichiers de donnée dans le dossier
+        donné
+        @param folder - le nom du dossier où sont enregistés les fichiers de donnée
+        @return - None, mais on affiche un graphe des évolutions des erreurs de chaque fichier 
+    '''
+    @staticmethod
+    def plot_all(folder='ga_save'):
+        pathname = os.getcwd()+'/'+folder
+        for filename in os.listdir(pathname):
+            with open(os.path.join(pathname, filename), 'r') as file:
+                number_generation = int(file.readline().split(' ')[1])
+                line = file.readline()
+                # print(number_generation, line, list(map(float,line.split(' '))))
+                plt.plot(np.linspace(1, number_generation, number_generation), list(map(float,line.split(' '))))
+                file.close()
+        plt.show()
     ''' Méthode : bestfit
         @return Renvoie le score de fitness du meilleur 
                 individu de la dernière génération en cours
