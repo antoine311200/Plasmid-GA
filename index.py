@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     number_population = 40
     number_parents = 20
-    number_generations = 300
+    number_generations = 3
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté

@@ -23,9 +23,13 @@ class Genetic:
             launch permet de lancer le calcul avec max_generation générations
             print donne le dernier meilleurs individus de la derniere génération
     """
-    def __init__(self, number_parents, max_generation, population, fitness_function, data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1]}):
+    def __init__(self, number_parents, max_generation, population, fitness_function, data = {}):
         
-        self.data = data
+        self.data = {"selection_mode" : "elitist", "crossover_mode" : "normal", "mutation_table" : None, "fitness_data" : None, "crossover_data": [1,1,1,1]}
+        
+        for (k,v) in data.items():
+            self.data[k] = v
+        
         self.number_parents = number_parents
         self.max_generation = max_generation
         self.initial_population = population
@@ -34,7 +38,7 @@ class Genetic:
             "selection_mode" : mode de selection des individu : elitist, tournoi ou fulltournoi sont acceptés
             "crossover_mode" : méthode du crossover, actuellement seul : "normal" est accepté
             "mutation_table" : Continent None, ou une liste de liste, chaque élement représente un gène ["type de mutation", param1, param2, ...]
-                   "type de mutation" accepte beaucoup de valeur : gauss, uniform, gauss bounded, randint, triangular
+                   "type de mutation" accepte beaucoup de valeur : gauss, uniform, uniform bounded, gauss bounded, randint, triangular
                    param1, param2 correspond au paramètre de chaque fonction particuliere
             "fitness_data" : un liste de donnée qui sera mise en paramètre de la fitness_function, None si il n'y en a pas besoin
 
@@ -262,6 +266,7 @@ class Genetic:
         de probabilité choisie : 
         - gauss             -> 'gauss', mu (float, la moyenne), sigma (float, la variance)
         - uniform           -> 'uniform', min (float), max (float)
+        - uniform bounded   -> 'uniform bounded', mut_min, mut_max, min(float), max(float)
         - gauss bounded     -> 'gauss bounded', sigma (float, la variance), origin (float, centre de l'intervall de taill 2 sigma), factor (float, )
         - triangular        -> 'triangular', low (float), high (float), mode (float)
         - randint           -> 'randint', min (int), max (int)
@@ -287,6 +292,22 @@ class Genetic:
                         if self.current_offspring[i][j]+mute_rate <= origin+b and self.current_offspring[i][j]+mute_rate >= origin+a:
                             self.current_offspring[i][j] += mute_rate
                     
+                    # Distribution uniforme bornée
+                    elif random_method == 'uniform bounded':
+
+                        vmin,vmax=self.mutation_table[j][1], self.mutation_table[j][2]
+                        a,b = self.mutation_table[j][3], self.mutation_table[j][4]
+
+                        # l = 0
+                        while True:
+                            # l+=1
+                            # if l>=10:
+                            #     print(self.current_offspring[i][j], a, b)
+                            mute_rate = random.uniform(vmin, vmax)
+                            if self.current_offspring[i][j]+mute_rate >= a and self.current_offspring[i][j]+mute_rate <= b:
+                                self.current_offspring[i][j] += mute_rate
+                                break
+                                        
                     # Distribution gaussienne restreinte à un intervalle
                     elif random_method == 'gauss bounded':
 
