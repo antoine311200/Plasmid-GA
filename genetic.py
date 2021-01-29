@@ -1,6 +1,7 @@
 import numpy as np
 import math as math
-
+import os
+import matplotlib.pyplot as plt
 import random
 
 """ Class Genetic :
