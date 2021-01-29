@@ -50,7 +50,7 @@ class Plasmid:
         self.sequence = sequence
         self.rotation_table = rotation_table
         self.trajectory = trajectory
-        self.number_repli= number_repli
+        self.number_repli = number_repli
         self.compute()
 
     """
@@ -100,7 +100,7 @@ class Plasmid:
             point1 = self.trajectory.getIndexFromTraj(i)
             point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
             var = point1-point2
-            dist += math.sqrt(var.dot(var))/math.sqrt(2*(i+1)) # correspond à la norme de var
+            dist += math.sqrt(var.dot(var))#/math.sqrt(2*(i+1)) # correspond à la norme de var
         return dist/self.number_repli
 
 
@@ -128,10 +128,10 @@ def data_for_mutation(rot_tab, mutation_dispersion):
         #     ['uniform bounded', -twist_variance, twist_variance, twist_low, twist_high],
         #     ['uniform bounded', -wedge_variance, wedge_variance, wedge_low, wedge_high]
         # ]
-        mut_table += [
-            ['uniform', -twist_variance, twist_variance],
-            ['uniform', -wedge_variance, wedge_variance]
-        ]
-        # mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
-        #                ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
+        # mut_table += [
+        #     ['uniform', -twist_variance, twist_variance],
+        #     ['uniform', -wedge_variance, wedge_variance]
+        # ]
+        mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
+                       ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
     return mut_table

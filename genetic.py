@@ -300,10 +300,15 @@ class Genetic:
                         a,b = self.mutation_table[j][3], self.mutation_table[j][4]
 
                         # l = 0
+                        if self.current_offspring[i][j] >= a and self.current_offspring[i][j] <= b:
+                            raise Exception("individual "+str(i)+" is out of segment")
+                    
+                        fail_index = 0
                         while True:
-                            # l+=1
-                            # if l>=10:
-                            #     print(self.current_offspring[i][j], a, b)
+                            fail_index+=1
+                            if fail_index>=25:
+                                raise Exception("individual "+str(i)+" is out of segment")
+
                             mute_rate = random.uniform(vmin, vmax)
                             if self.current_offspring[i][j]+mute_rate >= a and self.current_offspring[i][j]+mute_rate <= b:
                                 self.current_offspring[i][j] += mute_rate
@@ -316,11 +321,15 @@ class Genetic:
                         origin = self.mutation_table[j][2]
                         variance = self.mutation_table[j][3]
 
-                        l = 0
+                        if self.current_offspring[i][j] >= origin-sigma and self.current_offspring[i][j] <= origin+sigma:
+                            raise Exception("individual "+str(i)+" is out of segment")
+                        
+                        fail_index = 0
                         while True:
-                            l+=1
-                            if l>=10:
-                                print(self.current_offspring[i][j], origin-sigma, origin+sigma)
+                            fail_index+=1
+                            if fail_index>=25:
+                                raise Exception("individual "+str(i)+" is out of segment")
+
                             mute_rate = random.gauss(mu=self.current_offspring[i][j], sigma=sigma/variance)#max(origin-sigma, min(origin+sigma, random.gauss(mu=self.current_offspring[i][j], sigma=sigma)))
                             if mute_rate >= origin-sigma and mute_rate <= origin+sigma:
                                 self.current_offspring[i][j] = mute_rate
@@ -351,7 +360,15 @@ class Genetic:
         
         self.current_population = np.concatenate((self.current_parents,self.current_offspring), axis=0)
 
+    ''' Method : log
+        Cette méthode permet d'enregistrer les paramètres du modèle ainsi 
+        que les erreurs aux différentes générations dans un fichier
 
+        @param folder - le path du dossier où sera stocké le fichier de donnée
+        @param name - un nom pour reconnaître son modèle 
+
+        @return - None, mais le fichier est créé au nom 'ga_[name]_[random int]'
+    '''
     def log(self, folder, name=""):
         self.folder = folder
         self.name = name
@@ -368,15 +385,15 @@ class Genetic:
         line_data = ' '.join(string_parameters)
         line_error = ' '.join(list(map(str, np.array(self.evolution_trace, dtype=object)[::,1])))
 
-        # print(line_data)
-        # print(line_error)
-
         file = open(self.folder+'/ga_'+self.name+str(random.randint(0,100000)), 'w')
         file.write(line_data)
         file.write('\n')
         file.write(line_error)
         file.close()
 
+    ''' Method : plot
+        Affiche l'évolution de l'erreur du meilleur individu à chaque génération
+    '''
     def plot(self):
         plt.plot(np.linspace(1, self.max_generation, self.max_generation), np.array(self.evolution_trace, dtype=object)[::,1])
         
@@ -385,9 +402,17 @@ class Genetic:
 
         plt.show()
 
+    ''' Static method : plot_all
+        Méthode statique qui permet de charger tous les fichiers de donnée dans le dossier
+        donné
+
+        @param folder - le nom du dossier où sont enregistés les fichiers de donnée
+
+        @return - None, mais on affiche un graphe des évolutions des erreurs de chaque fichier 
+    '''
     @staticmethod
-    def plot_all():
-        pathname = os.getcwd()+'/ga_save'
+    def plot_all(folder='ga_save'):
+        pathname = os.getcwd()+'/'+folder
         for filename in os.listdir(pathname):
             with open(os.path.join(pathname, filename), 'r') as file:
                 number_generation = int(file.readline().split(' ')[1])

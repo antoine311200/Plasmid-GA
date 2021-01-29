@@ -20,7 +20,7 @@ if __name__ == "__main__":
     mutation_dispersion = 250
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
-    number_repliment = 60
+    number_repliment = 2000
 
     #paramete intra Genetic :
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
@@ -40,7 +40,8 @@ if __name__ == "__main__":
     plasmid.load("./resources/plasmid_8k.fasta")
 
     mutation_table = data_for_mutation(RotTable(), mutation_dispersion)
-    average_sample = plasmid.encodage()
+    average_sample = [35.69138, 6.41456, 32.73365, -4.81166, 29.7054, 9.5206, 29.95633, 2.43291, 34.32917, 70.16257, 33.76503, -1.90312, 29.85794, 8.87855, 37.24665, -0.17051, 41.61833, 5.9078, 34.71625, -0.70015]
+    #plasmid.encodage()
     sample_size = len(average_sample)
 
 
@@ -51,7 +52,7 @@ if __name__ == "__main__":
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample[j]+rand,5))
+            sample.append(round(average_sample[j]+rand/100,5))
         initial_population.append(sample)
 
     data = {
