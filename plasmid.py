@@ -124,9 +124,13 @@ def data_for_mutation(rot_tab, mutation_dispersion):
         print('Twist : ', twist_average*3, twist_variance*3, twist_low, twist_high)
         print('Wedge : ', wedge_average*3, wedge_variance*3, wedge_low, wedge_high)
 
-        mut_table += [ # -1/mutation_dispersion, 1/mutation_dispersion
-            ['uniform bounded', -twist_variance, twist_variance, twist_low, twist_high],
-            ['uniform bounded', -wedge_variance, wedge_variance, wedge_low, wedge_high]
+        # mut_table += [ # -1/mutation_dispersion, 1/mutation_dispersion
+        #     ['uniform bounded', -twist_variance, twist_variance, twist_low, twist_high],
+        #     ['uniform bounded', -wedge_variance, wedge_variance, wedge_low, wedge_high]
+        # ]
+        mut_table += [
+            ['uniform', -twist_variance, twist_variance],
+            ['uniform', -wedge_variance, wedge_variance]
         ]
         # mut_table += [["gauss bounded", rot_tab.getTwistVariance(dinucleotide), rot_tab.getTwist(dinucleotide), mutation_dispersion],\
         #                ["gauss bounded", rot_tab.getWedgeVariance(dinucleotide), rot_tab.getWedge(dinucleotide), mutation_dispersion]]
