@@ -11,39 +11,40 @@ if __name__ == "__main__":
 
     # Genetic algorithm parameters
 
-    number_population = 10
-    number_parents = 1
-    number_generations = 1
+    number_population = 50
+    number_parents = 20
+    number_generations = 5
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
-    mutation_dispersion = 1000
+    mutation_dispersion = 2000
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
-    number_repliement = 100
+    number_repliment = 100
 
     #paramete intra Genetic :
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
-    selection_mode = "fulltournoi"
+    selection_mode = "tournoi"
 
     #Seul normal est disponible
     crossover_mode = "normal"  
 
     #Correspond au nombre d'enfant par méthode de crossover (par nombre de parent)
-    crossover_data = [1,1,1,1]
+    crossover_data = [1,1,1,1] 
     # [1] -> seulement 2 parents
     # [1,1,1] -> 2, 3 et 4 parents équirepartis
     # [3,0,1] -> 25% 4 parents 75% 2 parents
 
     
-    plasmid = Plasmid("plasmid", number_repli=number_repliement)
+    plasmid = Plasmid("plasmid", number_repli=number_repliment)
     plasmid.load("./resources/plasmid_8k.fasta")
 
     mutation_table = data_for_mutation(RotTable(), mutation_dispersion)
     average_sample = plasmid.encodage()
     sample_size = len(average_sample)
 
-    best = [35.69138, 6.41456, 32.73365, -4.81166, 29.7054, 9.5206,  29.95633, 2.43291, 34.32917, 70.16257, 33.76503, -1.90312, 29.85794, 8.87855, 37.24665, -0.17051, 41.61833,  5.9078,  34.71625, -0.70015]
+
+
     #Creation de la population initial
     initial_population = []
     for i in range(number_population):
