@@ -5,19 +5,20 @@ import random
 
 from plasmid import *
 from genetic import *
+from fitness import *
 
 if __name__ == "__main__":
 
 
     # Genetic algorithm parameters
 
-    number_population = 50
-    number_parents = 20
-    number_generations = 5
+    number_population = 100
+    number_parents = 25
+    number_generations = 150
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
-    mutation_dispersion = 2000
+    mutation_dispersion = 2500
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
     number_repliment = 100
@@ -46,12 +47,38 @@ if __name__ == "__main__":
 
 
     #Creation de la population initial
-    initial_population = []
-    for i in range(number_population):
+    # best = [35.69138, 6.41456, 32.73365, -4.81166, 29.7054, 9.5206, 29.95633, 2.43291, 34.32917, 70.16257, 33.76503, -1.90312, 29.85794, 8.87855, 37.24665, -0.17051, 41.61833, 5.9078, 34.71625, -0.70015]
+
+    # best = [35.6082,  7.40623, 34.87048, -0.35868, 28.19604,  7.84619, 31.447,
+    #         2.55371,  34.3969,  11.17229, 33.65879, 1.50384, 30.22278,  7.24414,
+    #         37.08255, 3.52021, 40.39011,  4.79746, 36.2369,   0.79884]
+
+    best = [35.66005,  7.12851, 32.50664,  3.22198, 26.43402, 11.99214, 30.01582,
+      2.75054,
+ 36.03844, 65.92154, 33.62013, -0.1638,  30.55007,  7.02352, 38.11358, -5.87874,
+ 40.66411,  5.32515, 34.28866, -1.27557]
+
+    best = [35.65971,  7.14187, 32.52023,  3.66162, 26.41211, 12.02372, 30.03467,
+   2.84766,
+ 36.0475,  66.14299, 33.61835, -0.1471 , 30.55315 , 7.04398, 38.10897, -5.9284,
+ 40.59823,  5.26535, 34.25751, -1.36465]
+
+    best = [35.66014,  7.12536 ,32.52884 , 3.80588 ,26.38461, 12.06161, 30.01574,
+      2.83204,
+ 36.0387 , 66.24149, 33.61997, -0.14671, 30.55945,  7.00146, 38.06833, -5.97425,
+ 40.55165,  5.21129, 34.2458,  -1.40511]
+
+
+#     [35.65798  7.10825 32.48623  3.63843 26.43215 12.13824 30.01666  2.82094
+#  36.04131 66.31438 33.62137 -0.245   30.60268  6.94842 38.03826 -6.02887
+#  40.56469  5.18218 34.25775 -1.33656]
+
+    initial_population = [best] #* number_population
+    for i in range(number_population-1):
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample[j]+rand,5))
+            sample.append(round(best[j]+rand/50,9))
         initial_population.append(sample)
 
     data = {

@@ -75,7 +75,7 @@ class Genetic:
     """
     def fitness(self, individual):
         if(self.has_fitness_data):
-            return self.fitness_function(individual, self.fitness_data)
+            return self.fitness_function(individual, *self.fitness_data)
         else :
             return self.fitness_function(individual)
 
@@ -304,7 +304,8 @@ class Genetic:
                         a,b = self.mutation_table[j][3], self.mutation_table[j][4]
 
                         # l = 0
-                        if self.current_offspring[i][j] <= a and self.current_offspring[i][j] >= b:
+                        if self.current_offspring[i][j] < a or self.current_offspring[i][j] > b:
+                            print('\n', a, self.current_offspring[i][j], b)
                             raise Exception("individual "+str(i)+" is out of segment")
                     
                         fail_index = 0
@@ -325,7 +326,7 @@ class Genetic:
                         origin = self.mutation_table[j][2]
                         variance = self.mutation_table[j][3]
 
-                        if self.current_offspring[i][j] <= origin-sigma or self.current_offspring[i][j] >= origin+sigma:
+                        if self.current_offspring[i][j] < origin-sigma or self.current_offspring[i][j] > origin+sigma:
                             raise Exception("individual "+str(i)+" is out of segment")
                         
                         fail_index = 0
