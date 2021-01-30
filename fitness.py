@@ -46,7 +46,7 @@ class Fitness:
             raise ValueError('real and predict arguments do not have the same length')
         for i in range(len(predict)):
             loss += max(0, 1-predict[i]*real[i])
-        return loss/2
+        return loss
     
     
     @staticmethod
@@ -57,7 +57,7 @@ class Fitness:
             raise ValueError('real and predict arguments do not have the same length')
         for i in range(len(predict)):
             loss += math.log(1+math.exp(-predict[i]*real[i]))
-        return loss/2
+        return loss
     
     
     @staticmethod
@@ -71,5 +71,5 @@ class Fitness:
                 loss += -real[i]*math.log(predict[i])-(1-predict[i])*math.log(1-predict[i])
             else:
                 raise ValueError("predict must be between 0 and 1")
-        return loss/2
+        return loss
     
