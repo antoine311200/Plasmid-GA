@@ -355,7 +355,7 @@ class Genetic:
                         mute_rate = random.uniform(-0.02, 0.02)
                         self.current_offspring[i][j] += mute_rate
                     
-                    self.current_offspring[i][j] = round(self.current_offspring[i][j], 5)
+                    self.current_offspring[i][j] = round(self.current_offspring[i][j], 9)
 
         else:
             # Mutation uniforme dans le cas où la table de mutation n'a pas été fournie
