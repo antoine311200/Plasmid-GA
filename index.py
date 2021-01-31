@@ -27,8 +27,8 @@ if __name__ == "__main__":
     #Choisir entre "elitist", "tournoi" et "fulltournoi"
     selection_mode = "tournoi"
 
-    #Seul normal est disponible
-    crossover_mode = "normal"  
+    #Choisir entre : "normal", "unitform", "uniform bias" et "gaussian"
+    crossover_mode = "gaussian"  
 
     #Correspond au nombre d'enfant par méthode de crossover (par nombre de parent)
     crossover_data = [1,1,1,1] 
@@ -108,4 +108,4 @@ if __name__ == "__main__":
     plasmid.compute()
     plasmid.draw()
 
-    Genetic.plot_all()
+    # Genetic.plot_all()
