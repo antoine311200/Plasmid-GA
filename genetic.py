@@ -37,7 +37,7 @@ class Genetic:
         """ Explication de data
             data est un dictionnaire qui contient toute les informations importantes pour le choix des méthodes de Genetic
             "selection_mode" : mode de selection des individu : elitist, tournoi ou fulltournoi sont acceptés
-            "crossover_mode" : méthode du crossover, actuellement seul : "normal" est accepté
+            "crossover_mode" : méthode du crossover : "normal", "unitform", "uniform bias" et "gaussian" est accepté
             "mutation_table" : Continent None, ou une liste de liste, chaque élement représente un gène ["type de mutation", param1, param2, ...]
                    "type de mutation" accepte beaucoup de valeur : gauss, uniform, uniform bounded, gauss bounded, randint, triangular
                    param1, param2 correspond au paramètre de chaque fonction particuliere
@@ -270,8 +270,8 @@ class Genetic:
             for i in range(self.population_size[1]):
                 var_gene = self.mutation_table[i][1] # variance sur le gene i
                 s = 0
-                for j in range(self.population_size[1]):
-                    s += random.gauss(Parents[j], self.mutation_table[i][1], 1000)
+                for j in range(d):
+                    s += np.random.normal(Parents[j][i], var_gene)
                 s = s/d # renormalisation de la probabilité
                 if s < (self.mutation_table[i][2] - var_gene):
                     child.append(self.mutation_table[i][2] - var_gene)

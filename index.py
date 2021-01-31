@@ -82,12 +82,12 @@ if __name__ == "__main__":
  29.85492141 , 8.8883577,  37.24703549, -0.17266251, 41.67593791,  5.92216544,
  34.69793073, -0.68207309]
 
-    initial_population = []#best] #* number_population
+    initial_population = []
     for i in range(number_population):
         sample = []
         for j in range(sample_size):
             rand = random.uniform(-mutation_table[j][1], +mutation_table[j][1])
-            sample.append(round(average_sample[j]+rand/40,9))
+            sample.append(round(average_sample[j]+rand,9))
         initial_population.append(sample)
 
     data = {
