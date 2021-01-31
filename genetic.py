@@ -37,7 +37,7 @@ class Genetic:
         """ Explication de data
             data est un dictionnaire qui contient toute les informations importantes pour le choix des méthodes de Genetic
             "selection_mode" : mode de selection des individu : elitist, tournoi ou fulltournoi sont acceptés
-            "crossover_mode" : méthode du crossover, actuellement seul : "normal" est accepté
+            "crossover_mode" : méthode du crossover : "normal", "unitform", "uniform bias" et "gaussian" est accepté
             "mutation_table" : Continent None, ou une liste de liste, chaque élement représente un gène ["type de mutation", param1, param2, ...]
                    "type de mutation" accepte beaucoup de valeur : gauss, uniform, uniform bounded, gauss bounded, randint, triangular
                    param1, param2 correspond au paramètre de chaque fonction particuliere
@@ -235,12 +235,51 @@ class Genetic:
         Crée un enfant en mélangeant les gènes des d parents
     """
     def repro(self, Parents, d): # d = nombre de parents
-        child = Parents[0].copy() 
+        
         nb_chrmsm = self.offspring_size[1]//d # nb_chrmsm : nombre de gènes transmis par chaque parent à l'enfant
-        for i in range(1, d-1):
-            child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
-        # on complète avec le bon nombre de gènes, provenant du dernier parent
-        child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
+        
+        # Méthode déterministe : on sélectionne un bout de même taille pour chaque parent, puis on les concatène
+        if self.crossover_mode == "normal":
+            child = Parents[0].copy() 
+            for i in range(1, d-1):
+                child[i*nb_chrmsm:(i+1)*nb_chrmsm] = Parents[i][i*nb_chrmsm:(i+1)*nb_chrmsm].copy() 
+            # on complète avec le bon nombre de gènes, provenant du dernier parent
+            child[(d-1)*nb_chrmsm:] = Parents[-1][(d-1)*nb_chrmsm:].copy()
+
+
+        # Méthode probabiliste discrète : chaque gène est choisi au hasard parmi ceux de ses parents
+        elif self.crossover_mode == "uniform":
+            child = []
+            for i in range(self.population_size[1]):
+                j = random.randint(0, d-1)
+                child += [Parents[j][i]]
+
+        # Méthode probabiliste discrète : chaque gène est choisi au hasard parmi ceux de ses parents,
+        #mais le gène du premier parent a plus d'une chance sur deux, soit (d+1)/(2d), d'être sélectionné.
+        elif self.crossover_mode == "uniform bias":
+            child = []
+            for i in range(self.population_size[1]):
+                j = random.randint(0, d-1)
+                j = random.randint(0, j)
+                child += [Parents[j][i]]
+
+        # Méthode probabiliste continue : chaque gène suit une somme de lois normales, chacune centrée sur le gène d'un parent
+        elif self.crossover_mode == "gaussian":
+            child = []
+            
+            for i in range(self.population_size[1]):
+                var_gene = self.mutation_table[i][1] # variance sur le gene i
+                s = 0
+                for j in range(d):
+                    s += np.random.normal(Parents[j][i], var_gene)
+                s = s/d # renormalisation de la probabilité
+                if s < (self.mutation_table[i][2] - var_gene):
+                    child.append(self.mutation_table[i][2] - var_gene)
+                elif s > (self.mutation_table[i][2] + var_gene):
+                    child.append(self.mutation_table[i][2] + var_gene)
+                else:
+                    child.append(s)
+
         return child
 
     """ Méthode : crossover
