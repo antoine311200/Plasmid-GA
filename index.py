@@ -13,12 +13,12 @@ if __name__ == "__main__":
     # Genetic algorithm parameters
 
     number_population = 100
-    number_parents = 25
-    number_generations = 1
+    number_parents = 45
+    number_generations = 10
 
     # Plus le nombre est grand, plus les mutations sont proches de l'original
     # Un nombre trop petit apporte par contre trop de divergence entre l'original et le muté
-    mutation_dispersion = 1000
+    mutation_dispersion = 250
 
     #numbre de repliment ajouté à la fin de la chaîne ADN pour avoir une meilleure estimation avec la fonction fitness
     number_repliment = 100

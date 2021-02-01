@@ -100,8 +100,8 @@ class Plasmid:
             point1 = self.trajectory.getIndexFromTraj(i)
             point2 = self.trajectory.getIndexFromTraj(-self.number_repli+i)
             var = point1-point2
-            dist += var.dot(var)/(i+1)#math.sqrt(var.dot(var))#/(i+1) # correspond à la norme de var
-        return dist #self.number_repli
+            dist += math.sqrt(var.dot(var))#/(i+1) # correspond à la norme de var
+        return dist/self.number_repli
 
 
 def fitness_for_plasmid(indiv, rotation_table, trajectory, sequence):
@@ -121,8 +121,8 @@ def data_for_mutation(rot_tab, mutation_dispersion):
         wedge_low       = round(wedge_average - wedge_variance,8)
         wedge_high      = round(wedge_average + wedge_variance,8)
 
-        print('Twist : ', twist_average*3, twist_variance*3, twist_low, twist_high)
-        print('Wedge : ', wedge_average*3, wedge_variance*3, wedge_low, wedge_high)
+        # print('Twist : ', twist_average*3, twist_variance*3, twist_low, twist_high)
+        # print('Wedge : ', wedge_average*3, wedge_variance*3, wedge_low, wedge_high)
 
         # mut_table += [ # -1/mutation_dispersion, 1/mutation_dispersion
         #     ['uniform bounded', -twist_variance, twist_variance, twist_low, twist_high],
